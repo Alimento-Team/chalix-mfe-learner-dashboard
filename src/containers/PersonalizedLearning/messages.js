@@ -51,6 +51,16 @@ const messages = defineMessages({
     defaultMessage: 'Tỷ lệ hoàn thành',
     description: 'Completion rate label',
   },
+  errorTitle: {
+    id: 'personalized.learning.error.title',
+    defaultMessage: 'Lỗi',
+    description: 'Error title',
+  },
+  errorMessage: {
+    id: 'personalized.learning.error.message',
+    defaultMessage: 'Không thể tải dữ liệu học tập. Vui lòng thử lại sau.',
+    description: 'Error message',
+  },
 });
 
 export default messages;

@@ -30,6 +30,7 @@ import App from './App';
 import NoticesWrapper from './components/NoticesWrapper';
 
 subscribe(APP_READY, () => {
+  console.log('[Index] APP_READY event fired');
   const root = createRoot(document.getElementById('root'));
 
   root.render(
@@ -44,6 +45,7 @@ subscribe(APP_READY, () => {
       </AppProvider>
     </StrictMode>,
   );
+  console.log('[Index] App rendered');
 });
 
 subscribe(APP_INIT_ERROR, (error) => {

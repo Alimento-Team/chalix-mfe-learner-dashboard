@@ -32,19 +32,30 @@ export const Dashboard = () => {
     loading: hoursLoading 
   } = useLearningHours();
 
-  // Check URL parameters for course ID
+  // Check URL parameters for course ID and tab
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const courseId = urlParams.get('course_id');
+    const tab = urlParams.get('tab');
+    
+    console.log('[Dashboard] URL params:', { courseId, tab });
+    
     if (courseId) {
+      console.log('[Dashboard] Setting course ID and personalized tab');
       setSelectedCourseId(courseId);
       setActiveTab('personalized');
+    } else if (tab) {
+      // Handle tab parameter without course_id
+      console.log('[Dashboard] Setting active tab to:', tab);
+      setActiveTab(tab);
     }
   }, []);
 
   const renderTabContent = () => {
+    console.log('[Dashboard] Rendering tab content for:', activeTab);
     switch (activeTab) {
       case 'personalized':
+        console.log('[Dashboard] Rendering PersonalizedLearning component');
         return <PersonalizedLearning courseId={selectedCourseId} />;
       case 'ai-suggested':
       case 'internal':
@@ -52,6 +63,7 @@ export const Dashboard = () => {
       case 'required':
       case 'teaching':
       default:
+        console.log('[Dashboard] Rendering CoursesPanel');
         return (
           <DashboardLayout>
             <CoursesPanel activeCategory={activeTab} />
@@ -81,7 +93,7 @@ export const Dashboard = () => {
         )}
         
         {/* Course Category Tabs */}
-        {!initIsPending && (
+        {!initIsPending && activeTab !== 'personalized' && (
           <div className="course-category-navigation">
             <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab} className="course-tabs">
               <Nav.Item>
@@ -114,7 +126,7 @@ export const Dashboard = () => {
         )}
         
         {/* Learning Hours Progress - Moved inside dashboard-body */}
-        {!initIsPending && learningHours && !hoursLoading && (
+        {!initIsPending && activeTab !== 'personalized' && learningHours && !hoursLoading && (
           <div className="in-body-progress-container">
             <div className="progress-content">
               <div className="progress-stats">

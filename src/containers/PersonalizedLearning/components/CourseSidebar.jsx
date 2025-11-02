@@ -116,119 +116,135 @@ CourseCard.propTypes = {
 };
 
 const CourseSidebar = ({ data }) => {
+  const { formatMessage } = useIntl();
+
+  // Extract course data - NO MOCK DATA
+  const currentCourses = data?.courses?.filter(c => c.status === 'in_progress') || [];
+  const completedCourses = data?.courses?.filter(c => c.status === 'completed') || [];
+  const recommendedCourses = []; // Leave empty for now as requested
 
   return (
     <div className="course-sidebar">
-      {/* Current Courses */}
-      <Card className="mb-4">
-        <Card.Header className="bg-primary text-white py-2">
-          <h6 className="mb-0">
-            <PlayCircle size="16" className="me-2" />
-            {formatMessage(messages.currentCourses)} ({current_courses.length})
-          </h6>
-        </Card.Header>
-        <Card.Body className="p-0">
-          {currentCourses.length > 0 ? (
-            <div className="p-3">
-              {currentCourses.slice(0, 3).map((course, index) => (
-                <CourseCard key={course.course_id || index} course={course} type="current" />
-              ))}
-              {currentCourses.length > 3 && (
-                <Button variant="link" size="sm" className="p-0">
-                  Xem tất cả ({currentCourses.length}) khóa học
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="p-3 text-center">
-              <p className="text-muted small mb-0">Chưa có khóa học nào đang học</p>
-            </div>
-          )}
-        </Card.Body>
-      </Card>
-
-      {/* Recommended Courses */}
-      <Card className="mb-4">
-        <Card.Header className="bg-warning text-white py-2">
-          <h6 className="mb-0">
-            <Star size="16" className="me-2" />
-            {formatMessage(messages.recommendations)} ({recommended_courses.length})
-          </h6>
-        </Card.Header>
-        <Card.Body className="p-0">
-          {recommendedCourses.length > 0 ? (
-            <div className="p-3">
-              {recommendedCourses.slice(0, 2).map((course, index) => (
-                <CourseCard key={course.course_id || index} course={course} type="recommended" />
-              ))}
-              {recommendedCourses.length > 2 && (
-                <Button variant="link" size="sm" className="p-0">
-                  Xem thêm gợi ý ({recommendedCourses.length})
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="p-3 text-center">
-              <p className="text-muted small mb-0">Chưa có gợi ý khóa học</p>
-            </div>
-          )}
-        </Card.Body>
-      </Card>
-
-      {/* Recent Achievements */}
-      {achievements && achievements.length > 0 && (
-        <Card className="mb-4">
-          <Card.Header className="bg-success text-white py-2">
-            <h6 className="mb-0">
-              <CheckCircle size="16" className="me-2" />
-              Thành tích gần đây
-            </h6>
-          </Card.Header>
-          <Card.Body className="p-3">
-            {achievements.slice(0, 3).map((achievement, index) => (
-              <div key={`${achievement.title}-${achievement.earned_date}-${index}`} className="d-flex align-items-center mb-2">
-                <div className="me-2" style={{ fontSize: '20px' }}>
-                  {achievement.icon || '🏆'}
-                </div>
-                <div>
-                  <div className="fw-medium small">{achievement.title}</div>
-                  <small className="text-muted">
-                    {new Date(achievement.earned_date).toLocaleDateString('vi-VN')}
-                  </small>
-                </div>
+      {/* Courses In Progress Section */}
+      <div className="sidebar-section mb-4">
+        <h5 className="sidebar-section-title mb-3">
+          Khóa học đang thực hiện
+        </h5>
+        <Card className="shadow-sm border-0">
+          <Card.Body className="p-0">
+            {currentCourses.length > 0 ? (
+              <div className="course-progress-list">
+                {currentCourses.map((course, index) => (
+                  <div key={course.course_id || index} className="course-progress-item p-3 border-bottom">
+                    {/* Course Logo/Image */}
+                    <div className="d-flex align-items-start mb-3">
+                      <div 
+                        className="course-logo me-3"
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <i className="fas fa-book" />
+                      </div>
+                      <div className="flex-grow-1">
+                        <h6 className="mb-1 fw-semibold" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
+                          {course.course_name}
+                        </h6>
+                        <Badge bg="primary" className="mb-2" style={{ fontSize: '0.75rem' }}>
+                          Khóa học An toàn
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="progress-section">
+                      <div 
+                        className="progress mb-1" 
+                        style={{ 
+                          height: '8px', 
+                          backgroundColor: '#e9ecef',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <div
+                          className="progress-bar"
+                          style={{
+                            width: `${course.progress_percentage || 0}%`,
+                            backgroundColor: '#007bff',
+                            borderRadius: '4px',
+                          }}
+                        />
+                      </div>
+                      <small className="text-muted">{Math.round(course.progress_percentage || 0)}% hoàn thành</small>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="p-4 text-center">
+                <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>
+                  Chưa có khóa học nào đang thực hiện
+                </p>
+              </div>
+            )}
           </Card.Body>
         </Card>
-      )}
+      </div>
 
-      {/* Completed Courses */}
-      <Card>
-        <Card.Header className="bg-success text-white py-2">
-          <h6 className="mb-0">
-            <CheckCircle size="16" className="me-2" />
-            {formatMessage(messages.completedCoursesTitle)} ({completed_courses.length})
-          </h6>
-        </Card.Header>
-        <Card.Body className="p-0">
-          {completedCourses.length > 0 ? (
-            <div className="p-3">
-              {completedCourses.slice(0, 2).map((course, index) => (
-                <CourseCard key={course.course_id || index} course={course} type="completed" />
-              ))}
-              {completedCourses.length > 2 && (
-                <Button variant="link" size="sm" className="p-0">
-                  Xem tất cả ({completedCourses.length}) khóa đã hoàn thành
-                </Button>
-              )}
+      {/* Recommended Courses Section - Empty for now */}
+      <div className="sidebar-section mb-4">
+        <h5 className="sidebar-section-title mb-3">
+          Gợi ý khóa học
+        </h5>
+        <Card className="shadow-sm border-0">
+          <Card.Body className="p-0">
+            <div className="p-4 text-center">
+              <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>
+                Chưa có gợi ý khóa học nào
+              </p>
             </div>
-          ) : (
-            <div className="p-3 text-center">
-              <p className="text-muted small mb-0">Chưa hoàn thành khóa học nào</p>
-            </div>
-          )}
-        </Card.Body>
-      </Card>
+          </Card.Body>
+        </Card>
+      </div>
+
+      {/* Completed Courses Section */}
+      <div className="sidebar-section">
+        <h5 className="sidebar-section-title mb-3">
+          Khóa học đã hoàn thành
+        </h5>
+        <Card className="shadow-sm border-0">
+          <Card.Body className="p-0">
+            {completedCourses.length > 0 ? (
+              <div className="p-3">
+                {completedCourses.slice(0, 3).map((course, index) => (
+                  <CourseCard key={course.course_id || index} course={course} type="completed" />
+                ))}
+                {completedCourses.length > 3 && (
+                  <Button variant="link" size="sm" className="p-0 text-primary">
+                    Xem tất cả ({completedCourses.length}) khóa học
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="p-4 text-center">
+                <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>
+                  Chưa hoàn thành khóa học nào
+                </p>
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -30,7 +30,9 @@ import messages from './messages';
 import './App.scss';
 
 export const App = () => {
+  console.log('[App] Component rendering...');
   const { authenticatedUser } = React.useContext(AppContext);
+  console.log('[App] Authenticated user:', authenticatedUser?.username);
   const { formatMessage } = useIntl();
   const isFailed = {
     initialize: reduxHooks.useRequestIsFailed(RequestKeys.initialize),
