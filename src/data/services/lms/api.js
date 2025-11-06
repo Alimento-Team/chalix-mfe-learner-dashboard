@@ -17,9 +17,13 @@ import courseCreationApi from './courseCreation';
 /*********************************************************************************
  * GET Actions
  *********************************************************************************/
-export const initializeList = ({ user } = {}) => get(
-  stringifyUrl(urls.getInitApiUrl(), { [apiKeys.user]: user }),
-);
+export const initializeList = ({ user, filterType } = {}) => {
+  const params = {};
+  if (user) params[apiKeys.user] = user;
+  if (filterType) params.filter_type = filterType;
+  
+  return get(stringifyUrl(urls.getInitApiUrl(), params));
+};
 
 export const updateEntitlementEnrollment = ({ uuid, courseId }) => post(
   urls.entitlementEnrollment(uuid),

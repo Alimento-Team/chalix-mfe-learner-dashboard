@@ -11,9 +11,9 @@ export const state = StrictDict({
   sidebarShowing: (val) => React.useState(val), // eslint-disable-line
 });
 
-export const useInitializeDashboard = () => {
-  const initialize = apiHooks.useInitializeApp();
-  React.useEffect(() => { initialize(); }, []); // eslint-disable-line
+export const useInitializeDashboard = (filterType = null) => {
+  const initialize = apiHooks.useInitializeApp(filterType);
+  React.useEffect(() => { initialize(); }, [filterType]); // eslint-disable-line
 };
 
 export const useDashboardMessages = () => {

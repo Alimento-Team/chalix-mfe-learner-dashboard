@@ -22,13 +22,17 @@ export const useNetworkRequest = (action, args) => {
 /**
  * initialize the app, loading ora and course metadata from the api, and loading the initial
  * submission list data.
+ * @param {string} filterType - Optional filter type for course filtering
  */
-export const useInitializeApp = () => {
+export const useInitializeApp = (filterType = null) => {
   const loadData = reduxHooks.useLoadData();
-  return module.useNetworkRequest(api.initializeList, {
-    requestKey: RequestKeys.initialize,
-    onSuccess: ({ data }) => loadData(data),
-  });
+  return module.useNetworkRequest(
+    () => api.initializeList({ filterType }),
+    {
+      requestKey: RequestKeys.initialize,
+      onSuccess: ({ data }) => loadData(data),
+    }
+  );
 };
 
 export const useNewEntitlementEnrollment = (cardId) => {

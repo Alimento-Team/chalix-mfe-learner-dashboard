@@ -17,14 +17,30 @@ import DashboardBreadcrumb from './DashboardBreadcrumb';
 import hooks from './hooks';
 import './index.scss';
 
+// Map Vietnamese tab names to backend filter types
+const TAB_FILTER_MAP = {
+  'ai-suggested': null,        // AI suggested courses - no backend filter (separate logic)
+  'internal': 'organization',  // Khóa học nội bộ cơ quan
+  'elective': 'ministry',      // Khóa học của CC,VC Bộ
+  'required': 'mandatory',     // Khóa học bắt buộc
+  'teaching': 'teaching',      // Giảng dạy
+  'personalized': null,        // Personalized learning - no filter
+};
+
 export const Dashboard = () => {
-  hooks.useInitializeDashboard();
+  const [activeTab, setActiveTab] = useState('ai-suggested');
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  
+  // Get filter type for current tab
+  const filterType = TAB_FILTER_MAP[activeTab];
+  
+  // Initialize dashboard with filter
+  hooks.useInitializeDashboard(filterType);
+  
   const { pageTitle } = hooks.useDashboardMessages();
   const hasCourses = reduxHooks.useHasCourses();
   const initIsPending = reduxHooks.useRequestIsPending(RequestKeys.initialize);
   const showSelectSessionModal = reduxHooks.useShowSelectSessionModal();
-  const [activeTab, setActiveTab] = useState('ai-suggested');
-  const [selectedCourseId, setSelectedCourseId] = useState(null);
   
   // Use learning hours hook
   const { 
@@ -50,6 +66,12 @@ export const Dashboard = () => {
       setActiveTab(tab);
     }
   }, []);
+  
+  // Log filter type when tab changes
+  React.useEffect(() => {
+    console.log('[Dashboard] Active tab changed:', activeTab);
+    console.log('[Dashboard] Using filter type:', filterType);
+  }, [activeTab, filterType]);
 
   const renderTabContent = () => {
     console.log('[Dashboard] Rendering tab content for:', activeTab);
