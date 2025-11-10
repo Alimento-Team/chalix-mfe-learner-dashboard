@@ -35,13 +35,13 @@ export const CoursesPanel = ({ activeCategory = 'ai-suggested' }) => {
   const getCategoryTitle = () => {
     switch (activeCategory) {
       case 'ai-suggested':
-        return 'Khóa học do AI gợi ý';
+        return 'Khoá học do AI gợi ý';
       case 'internal':
-        return 'Khóa học nội bộ cơ quan';
+        return 'Khoá học nội bộ cơ quan';
       case 'elective':
-        return '“Khóa học của CC,VC Bộ';
+        return 'Khoá học chung của CC, VC Bộ';
       case 'required':
-        return 'Khóa học bắt buộc';
+        return 'Khoá học bắt buộc';
       case 'teaching':
         return 'Giảng dạy';
       default:

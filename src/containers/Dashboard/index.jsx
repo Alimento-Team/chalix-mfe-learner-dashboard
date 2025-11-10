@@ -19,7 +19,7 @@ import './index.scss';
 const TAB_FILTER_MAP = {
   'ai-suggested': null,        // AI suggested courses - no backend filter (separate logic)
   'internal': 'organization',  // Khóa học nội bộ cơ quan
-  'elective': 'ministry',      // Khóa học của CC,VC Bộ
+  'elective': 'ministry',      // Khoá học của CC,VC Bộ
   'required': 'mandatory',     // Khóa học bắt buộc
   'teaching': 'teaching',      // Giảng dạy
   'personalized': null,        // Personalized learning - no filter
@@ -110,22 +110,22 @@ export const Dashboard = () => {
             <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab} className="course-tabs">
               <Nav.Item>
                 <Nav.Link eventKey="ai-suggested" className={activeTab === 'ai-suggested' ? 'active-tab' : ''}>
-                  Khóa học do AI gợi ý
+                  Khoá học do AI gợi ý
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="internal" className={activeTab === 'internal' ? 'active-tab' : ''}>
-                  Khóa học nội bộ cơ quan
+                  Khoá học nội bộ cơ quan
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="elective" className={activeTab === 'elective' ? 'active-tab' : ''}>
-                  Khóa học của CC,VC Bộ
+                  Khoá học chung của CC, VC Bộ
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="required" className={activeTab === 'required' ? 'active-tab' : ''}>
-                  Khóa học bắt buộc
+                  Khoá học bắt buộc
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
