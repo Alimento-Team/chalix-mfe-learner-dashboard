@@ -12,6 +12,9 @@ config.resolve.modules = [
 
 config.module.rules[0].test = /\.(js|jsx|ts|tsx)$/;
 
+// Include @chalix packages in babel-loader
+config.module.rules[0].exclude = /node_modules\/(?!@chalix)/;
+
 config.resolve.extensions.push('.tsx', '.ts');
 
 config.plugins.push(

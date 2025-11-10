@@ -29,6 +29,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@chalix/frontend-component-header": "github:Alimento-Team/chalix-mfe-component-header#release",
     "@edx/frontend-component-footer": "^14.6.0",
     "@edx/frontend-component-header": "^6.2.0",
     "@edx/frontend-enterprise-hotjar": "7.2.0",

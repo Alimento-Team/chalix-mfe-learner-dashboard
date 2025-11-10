@@ -12,8 +12,6 @@ import DashboardModalSlot from 'plugin-slots/DashboardModalSlot';
 
 import LoadingView from './LoadingView';
 import DashboardLayout from './DashboardLayout';
-import DashboardHeader from './DashboardHeader';
-import DashboardBreadcrumb from './DashboardBreadcrumb';
 import hooks from './hooks';
 import './index.scss';
 
@@ -97,14 +95,6 @@ export const Dashboard = () => {
   return (
     <div id="dashboard-container" className="dashboard-main-container">
       <h1 className="sr-only">{pageTitle}</h1>
-      
-      {/* Header */}
-      <DashboardHeader />
-      
-      {/* Breadcrumb Navigation */}
-      <DashboardBreadcrumb />
-      
-
 
       <div className="dashboard-body">
         {!initIsPending && (

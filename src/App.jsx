@@ -24,6 +24,8 @@ import fakeData from 'data/services/lms/fakeData/courses';
 
 import AppWrapper from 'containers/WidgetContainers/AppWrapper';
 import LearnerDashboardHeader from 'containers/LearnerDashboardHeader';
+import ConfirmEmailBanner from 'containers/LearnerDashboardHeader/ConfirmEmailBanner';
+import MasqueradeBar from 'containers/MasqueradeBar';
 
 import { getConfig } from '@edx/frontend-platform';
 import messages from './messages';
@@ -81,7 +83,9 @@ export const App = () => {
       </Helmet>
       <div>
         <AppWrapper>
+          <ConfirmEmailBanner />
           <LearnerDashboardHeader />
+          <MasqueradeBar />
           <main id="main">
             {hasNetworkFailure
               ? (
