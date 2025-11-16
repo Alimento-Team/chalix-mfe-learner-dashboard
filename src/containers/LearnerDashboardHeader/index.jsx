@@ -29,18 +29,24 @@ export const LearnerDashboardHeader = () => {
 
   const handleNavigate = (tab) => {
     const config = getConfig();
+    const learnerDashboardUrl = `${config.BASE_URL || window.location.origin}/learner-dashboard`;
+    
     switch (tab) {
       case 'home':
-        window.location.href = `${config.LMS_BASE_URL}/dashboard`;
+        // Trang chủ - go to LMS home
+        window.location.href = config.LMS_BASE_URL;
         break;
       case 'category':
-        window.location.href = urls.baseAppUrl(courseSearchUrl);
+        // Danh mục - stay in learner dashboard (current MFE)
+        window.location.href = learnerDashboardUrl;
         break;
       case 'learning':
-        window.location.href = `${config.LMS_BASE_URL}/learning`;
+        // Học tập - go to LMS home
+        window.location.href = config.LMS_BASE_URL;
         break;
       case 'personalize':
-        window.location.href = `${config.LMS_BASE_URL}/personalize`;
+        // Cá nhân hóa - learner dashboard with personalized tab
+        window.location.href = `${learnerDashboardUrl}?tab=personalized`;
         break;
       default:
         break;
