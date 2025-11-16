@@ -56,7 +56,6 @@ export const LearnerDashboardHeader = () => {
   return (
     <ChalixHeaderWithUserPopup
       organizationTitle="PHẦN MỀM HỌC TẬP THÔNG MINH DÀNH CHO CÔNG CHỨC, VIÊN CHỨC"
-      organizationName="CỤC HÀNG HẢI VÀ ĐƯỜNG THỦY NỘI ĐỊA VIỆT NAM"
       searchPlaceholder="Nhập từ khóa tìm kiếm"
       onNavigate={handleNavigate}
       onUserMenuItemClick={handleUserMenuItemClick}
