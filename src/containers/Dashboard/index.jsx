@@ -19,8 +19,8 @@ import './index.scss';
 const TAB_FILTER_MAP = {
   'ai-suggested': null,        // AI suggested courses - no backend filter (separate logic)
   'internal': 'organization',  // Khóa học nội bộ cơ quan
-  'elective': 'ministry',      // Khoá học của CC,VC Bộ
-  'required': 'mandatory',     // Khóa học bắt buộc
+  'elective': 'elective',      // Khoá học chung cho công chức, viên chức của bộ (publish_type=elective)
+  'required': 'mandatory',     // Khóa học bắt buộc cho toàn bộ (publish_type=mandatory)
   'teaching': 'teaching',      // Giảng dạy
   'personalized': null,        // Personalized learning - no filter
 };

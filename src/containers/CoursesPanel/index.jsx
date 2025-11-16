@@ -27,8 +27,37 @@ export const CoursesPanel = ({ activeCategory = 'ai-suggested' }) => {
   const hasCourses = reduxHooks.useHasCourses();
   const courseListData = useCourseListData();
   
+  // Filter courses by courseCategory based on active category
+  const getFilteredCourses = () => {
+    if (!courseListData?.visibleList) return [];
+    
+    const allCourses = courseListData.visibleList;
+    
+    // Filter based on active category
+    switch (activeCategory) {
+      case 'elective':
+        // Show courses with courseCategory = 'elective' (Khoá học tự chọn CC, VC Bộ)
+        return allCourses.filter(course => 
+          course?.course?.courseCategory === 'elective' || course?.course?.publishType === 'elective'
+        );
+      case 'required':
+        // Show courses with courseCategory = 'mandatory' (Khoá học bắt buộc cho CC, VC Bộ)
+        return allCourses.filter(course => 
+          course?.course?.courseCategory === 'mandatory' || course?.course?.publishType === 'mandatory'
+        );
+      case 'internal':
+      case 'teaching':
+      case 'ai-suggested':
+      default:
+        // For other categories, show all courses (or apply other filters as needed)
+        return allCourses;
+    }
+  };
+  
+  const filteredCourses = getFilteredCourses();
+  
   // Calculate course statistics
-  const totalCourses = courseListData?.visibleList?.length || 0;
+  const totalCourses = filteredCourses?.length || 0;
   const completedCourses = 0; // This would need to be calculated from actual course data
   
   // Get title based on active category
@@ -47,6 +76,12 @@ export const CoursesPanel = ({ activeCategory = 'ai-suggested' }) => {
       default:
         return formatMessage(messages.myCourses);
     }
+  };
+  
+  // Create filtered course list data for rendering
+  const filteredCourseListData = {
+    ...courseListData,
+    visibleList: filteredCourses,
   };
   
   return (
@@ -71,7 +106,7 @@ export const CoursesPanel = ({ activeCategory = 'ai-suggested' }) => {
         </div>
       </div>
       <div className="course-content-area">
-        {hasCourses ? <CourseListSlot courseListData={courseListData} /> : <NoCoursesViewSlot />}
+        {hasCourses ? <CourseListSlot courseListData={filteredCourseListData} /> : <NoCoursesViewSlot />}
       </div>
     </div>
   );
