@@ -101,10 +101,6 @@ export const ChalixCourseCard = ({ cardId }) => {
           </div>
           
           <div className="chalix-course-body">
-            <div className="chalix-course-details">
-              <CourseCardDetails cardId={cardId} />
-            </div>
-            
             <div className="chalix-progress-section">
             <div className="chalix-progress-header">
               <div className="chalix-progress-percentage">
