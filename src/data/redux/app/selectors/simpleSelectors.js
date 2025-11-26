@@ -8,15 +8,15 @@ const mkSimpleSelector = (cb) => createSelector([module.appSelector], cb);
 
 // top-level app data selectors
 export const simpleSelectors = StrictDict({
-  courseData: mkSimpleSelector(app => app.courseData),
-  platformSettings: mkSimpleSelector(app => app.platformSettings),
-  suggestedCourses: mkSimpleSelector(app => app.suggestedCourses),
-  emailConfirmation: mkSimpleSelector(app => app.emailConfirmation),
+  courseData: mkSimpleSelector(app => app.courseData || {}),
+  platformSettings: mkSimpleSelector(app => app.platformSettings || {}),
+  suggestedCourses: mkSimpleSelector(app => app.suggestedCourses || []),
+  emailConfirmation: mkSimpleSelector(app => app.emailConfirmation || {}),
   enterpriseDashboard: mkSimpleSelector(app => app.enterpriseDashboard || {}),
-  selectSessionModal: mkSimpleSelector(app => app.selectSessionModal),
+  selectSessionModal: mkSimpleSelector(app => app.selectSessionModal || {}),
   pageNumber: mkSimpleSelector(app => app.pageNumber),
-  filters: mkSimpleSelector(app => app.filters),
-  socialShareSettings: mkSimpleSelector(app => app.socialShareSettings),
+  filters: mkSimpleSelector(app => app.filters || []),
+  socialShareSettings: mkSimpleSelector(app => app.socialShareSettings || {}),
 });
 
 export const cardSimpleSelectors = StrictDict({
@@ -28,7 +28,7 @@ export const cardSimpleSelectors = StrictDict({
   enrollment: ({ enrollment }) => enrollment,
   entitlement: ({ entitlement }) => entitlement,
   gradeData: ({ gradeData }) => gradeData,
-  relatedPrograms: ({ programs: { relatedPrograms } }) => relatedPrograms,
+  relatedPrograms: ({ programs }) => programs?.relatedPrograms || [],
 });
 
 export const mkCardSelector = (simpleSelector, selector) => (state, cardId) => (

@@ -27,12 +27,17 @@ export const courseCard = StrictDict({
   ),
   course: mkCardSelector(
     cardSimpleSelectors.course,
-    (course) => ({
-      bannerImgSrc: baseAppUrl(course.bannerImgSrc),
-      courseNumber: course.courseNumber,
-      courseName: course.courseName,
-      socialShareUrl: course.socialShareUrl,
-    }),
+    (course) => {
+      if (!course) {
+        return { bannerImgSrc: '', courseNumber: '', courseName: '', socialShareUrl: '' };
+      }
+      return {
+        bannerImgSrc: baseAppUrl(course.bannerImgSrc),
+        courseNumber: course.courseNumber,
+        courseName: course.courseName,
+        socialShareUrl: course.socialShareUrl,
+      };
+    },
   ),
   courseProvider: mkCardSelector(
     cardSimpleSelectors.courseProvider,
@@ -54,7 +59,7 @@ export const courseCard = StrictDict({
       isArchived: courseRun.isArchived,
       isStarted: courseRun.isStarted,
 
-      minPassingGrade: Math.floor(courseRun.minPassingGrade * 100),
+      minPassingGrade: courseRun.minPassingGrade ? Math.floor(courseRun.minPassingGrade * 100) : 0,
 
       homeUrl: courseRun.homeUrl,
       marketingUrl: courseRun.marketingUrl,
@@ -87,7 +92,9 @@ export const courseCard = StrictDict({
       if (enrollment == null) {
         return { isEnrolled: false };
       }
-      const { isStaff, hasUnmetPrereqs, isTooEarly } = enrollment.coursewareAccess;
+      // Handle cases where coursewareAccess is undefined (e.g., available but not enrolled courses)
+      const coursewareAccess = enrollment.coursewareAccess || {};
+      const { isStaff = false, hasUnmetPrereqs = false, isTooEarly = false } = coursewareAccess;
       return {
         coursewareAccess: enrollment.coursewareAccess,
         hasAccess: isStaff || !(hasUnmetPrereqs || isTooEarly),
@@ -138,7 +145,7 @@ export const courseCard = StrictDict({
   ),
   gradeData: mkCardSelector(
     cardSimpleSelectors.gradeData,
-    (gradeData) => ({ isPassing: gradeData.isPassing }),
+    (gradeData) => ({ isPassing: gradeData?.isPassing || false }),
   ),
   relatedPrograms: mkCardSelector(
     cardSimpleSelectors.relatedPrograms,

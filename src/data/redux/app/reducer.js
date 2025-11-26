@@ -30,7 +30,7 @@ const app = createSlice({
       courseData: courses.reduce(
         (obj, curr, index) => {
           const out = { ...curr, cardId: cardId(index) };
-          if (out.enrollment.lastEnrolled === null) {
+          if (out.enrollment && out.enrollment.lastEnrolled === null) {
             out.enrollment.lastEnrolled = today;
           }
           return { ...obj, [cardId(index)]: out };
