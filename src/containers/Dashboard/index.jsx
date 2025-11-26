@@ -17,12 +17,12 @@ import './index.scss';
 
 // Map Vietnamese tab names to backend filter types
 const TAB_FILTER_MAP = {
-  'ai-suggested': null,        // AI suggested courses - no backend filter (separate logic)
-  'internal': 'organization',  // Khóa học nội bộ cơ quan
-  'elective': 'elective',      // Khoá học chung cho công chức, viên chức của bộ (publish_type=elective)
-  'required': 'mandatory',     // Khóa học bắt buộc cho toàn bộ (publish_type=mandatory)
-  'teaching': 'teaching',      // Giảng dạy
-  'personalized': null,        // Personalized learning - no filter
+  'ai-suggested': 'available',    // AI suggested courses - show all available (unenrolled) courses
+  'internal': 'organization',     // Khóa học nội bộ cơ quan
+  'elective': 'elective',         // Khoá học chung cho công chức, viên chức của bộ (course_category=elective)
+  'required': 'mandatory',        // Khóa học bắt buộc (course_category=mandatory)
+  'teaching': 'teaching',         // Giảng dạy
+  'personalized': null,           // Personalized learning - no filter
 };
 
 export const Dashboard = () => {

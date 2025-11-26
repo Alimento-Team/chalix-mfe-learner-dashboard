@@ -18,6 +18,11 @@ import courseCreationApi from './courseCreation';
  * GET Actions
  *********************************************************************************/
 export const initializeList = ({ user, filterType } = {}) => {
+  // For 'available' filter type, call the available courses endpoint
+  if (filterType === 'available') {
+    return get(urls.getAvailableCoursesUrl());
+  }
+  
   const params = {};
   if (user) params[apiKeys.user] = user;
   if (filterType) params.filter_type = filterType;
