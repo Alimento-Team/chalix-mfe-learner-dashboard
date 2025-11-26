@@ -99,9 +99,11 @@ export const useClearFilters = () => {
 
 export const useLoadData = () => {
   const dispatch = useDispatch();
-  return ({ courses, ...globalData }) => {
+  return ({ courses, enrollments, availableCourses, ...globalData }) => {
     dispatch(actions.setPageNumber(1));
     dispatch(actions.loadGlobalData(globalData));
-    dispatch(actions.loadCourses({ courses }));
+    // Handle both enrolled courses (enrollments) and available courses
+    const coursesToLoad = courses || enrollments || availableCourses || [];
+    dispatch(actions.loadCourses({ courses: coursesToLoad }));
   };
 };
