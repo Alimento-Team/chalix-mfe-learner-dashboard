@@ -29,7 +29,6 @@ export const LearnerDashboardHeader = () => {
 
   const handleNavigate = (tab) => {
     const config = getConfig();
-    const learnerDashboardUrl = `${config.BASE_URL || window.location.origin}/learner-dashboard`;
     
     switch (tab) {
       case 'home':
@@ -37,17 +36,20 @@ export const LearnerDashboardHeader = () => {
         window.location.href = config.LMS_BASE_URL;
         break;
       case 'category':
-        // Danh mục - stay in learner dashboard (current MFE)
-        window.location.href = learnerDashboardUrl;
+        // Danh mục - stay in learner dashboard (current MFE) - remove query params
+        window.location.href = window.location.origin + window.location.pathname;
         break;
       case 'learning':
         // Học tập - go to LMS home
         window.location.href = config.LMS_BASE_URL;
         break;
-      case 'personalize':
+      case 'personalize': {
         // Cá nhân hóa - learner dashboard with personalized tab
-        window.location.href = `${learnerDashboardUrl}?tab=personalized`;
+        // Build URL with single trailing slash then query to avoid duplicates
+        const basePath = window.location.pathname.replace(/\/$/, '');
+        window.location.href = `${window.location.origin}${basePath}/?tab=personalized`;
         break;
+      }
       default:
         break;
     }

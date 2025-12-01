@@ -66,28 +66,39 @@ const PersonalizedLearning = ({ courseId = null }) => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="sr-only">Loading...</span>
-        </div>
+      <div className="personalized-learning-container" style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+        <Container fluid className="py-5">
+          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+            <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="sr-only">Đang tải dữ liệu học tập...</span>
+            </div>
+          </div>
+        </Container>
       </div>
     );
   }
 
   if (error) {
     return (
-      <Container className="py-4">
-        <div className="alert alert-danger" role="alert">
-          <h4 className="alert-heading">{formatMessage(messages.errorTitle)}</h4>
-          <p>{formatMessage(messages.errorMessage)}</p>
-        </div>
-      </Container>
+      <div className="personalized-learning-container" style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+        <Container fluid className="py-4">
+          <div className="alert alert-danger" role="alert">
+            <h4 className="alert-heading">{formatMessage(messages.errorTitle)}</h4>
+            <p>{formatMessage(messages.errorMessage)}</p>
+            <hr />
+            <p className="mb-0">
+              <small>Chi tiết lỗi: {error.message || JSON.stringify(error)}</small>
+            </p>
+          </div>
+        </Container>
+      </div>
     );
   }
 
   return (
-    <div className="personalized-learning-container">
+    <div className="personalized-learning-container" style={{ minHeight: '100vh', background: '#f5f7fa' }}>
       <Container fluid className="py-4">
+
         <Row className="g-4">
           {/* Main Content Area - Full Width */}
           <Col lg={8} md={12}>
@@ -124,6 +135,7 @@ const PersonalizedLearning = ({ courseId = null }) => {
                 )}
                 {activeTab === 'emotionRecognition' && (
                   <div className="text-center py-5">
+                    <i className="fas fa-smile text-primary mb-3" style={{ fontSize: '48px' }} />
                     <p className="text-muted">
                       Tính năng nhận diện cảm xúc sẽ sớm được kích hoạt
                     </p>
