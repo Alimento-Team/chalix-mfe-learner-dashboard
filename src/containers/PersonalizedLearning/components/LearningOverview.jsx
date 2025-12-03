@@ -168,8 +168,7 @@ const LearningOverview = ({ data }) => {
             <table className="table table-bordered table-hover learning-hours-table mb-4">
               <thead className="table-light">
                 <tr>
-                  <th className="text-center" style={{ width: '80px' }}>ID</th>
-                  <th>Họ và tên</th>
+                  <th>Tên khóa học</th>
                   <th className="text-center" style={{ width: '150px' }}>Số giờ (thực tế / cấu hình)</th>
                   <th className="text-center" style={{ width: '200px' }}>Trạng thái</th>
                 </tr>
@@ -177,7 +176,6 @@ const LearningOverview = ({ data }) => {
               <tbody>
                 {filteredCourses.map((course) => (
                   <tr key={course.id}>
-                    <td className="text-center">{course.id}</td>
                     <td>{course.name}</td>
                     <td className="text-center">
                       <span className="fw-semibold">
@@ -207,9 +205,6 @@ const LearningOverview = ({ data }) => {
           </div>
 
           <div className="completion-note">
-            <p className="text-muted mb-2" style={{ fontSize: '0.9rem', fontStyle: 'italic' }}>
-              Ghi chú: Số tiết 4/4 tương ứng số giờ đã học/tổng số giờ phải học
-            </p>
             <p className="fw-bold text-dark mb-0" style={{ fontSize: '1.1rem' }}>
               Tỷ lệ hoàn thành trong năm: <span className="text-primary">{completionPercentage}%</span>
             </p>
