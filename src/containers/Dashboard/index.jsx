@@ -16,12 +16,14 @@ import hooks from './hooks';
 import './index.scss';
 
 // Map Vietnamese tab names to backend filter types
+// Note: ALL tabs use 'all_visible' to get all courses user can see
+// Frontend (CoursesPanel) applies category-specific filtering to show correct courses per tab
 const TAB_FILTER_MAP = {
-  'ai-suggested': 'available',    // AI suggested courses - show all available (unenrolled) courses
-  'internal': 'organization',     // Khóa học nội bộ cơ quan
-  'elective': 'elective',         // Khoá học chung cho công chức, viên chức của bộ (course_category=elective)
-  'required': 'mandatory',        // Khóa học bắt buộc (course_category=mandatory)
-  'teaching': 'teaching',         // Giảng dạy
+  'ai-suggested': 'all_visible',  // AI suggested - show all visible courses
+  'internal': 'all_visible',      // Khoá học nội bộ - frontend filters for org courses
+  'elective': 'all_visible',      // Khoá học chung - frontend filters for elective courses
+  'required': 'all_visible',      // Khóa học bắt buộc - frontend filters for mandatory courses
+  'teaching': 'all_visible',      // Giảng dạy - frontend filters for teaching courses
   'personalized': null,           // Personalized learning - no filter
 };
 

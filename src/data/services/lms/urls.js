@@ -8,7 +8,7 @@ const getCmsBaseUrl = () => getConfig().STUDIO_BASE_URL || getConfig().CMS_BASE_
 export const getApiUrl = () => (`${getConfig().LMS_BASE_URL}/api`);
 
 const getInitApiUrl = () => (`${getApiUrl()}/learner_home/init`);
-const getAvailableCoursesUrl = () => (`${getApiUrl()}/learner_home/available_courses`);
+// Note: getAvailableCoursesUrl removed - all courses now fetched via init endpoint with filter_type
 
 const event = () => `${getBaseUrl()}/event`;
 const courseUnenroll = () => `${getBaseUrl()}/change_enrollment`;
@@ -53,7 +53,6 @@ export default StrictDict({
   entitlementEnrollment,
   event,
   getInitApiUrl,
-  getAvailableCoursesUrl,
   learningMfeUrl,
   programsUrl,
   updateEmailSettings,
