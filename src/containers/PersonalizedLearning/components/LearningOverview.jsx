@@ -268,7 +268,7 @@ const LearningOverview = ({ data }) => {
               <thead className="table-light">
                 <tr>
                   <th>Tên khóa học</th>
-                  <th className="text-center" style={{ width: '150px' }}>Số giờ (thực tế / cấu hình)</th>
+                  <th className="text-center" style={{ width: '150px' }}>Số giờ hoàn thành / Định mức</th>
                   <th className="text-center" style={{ width: '200px' }}>Trạng thái</th>
                 </tr>
               </thead>
