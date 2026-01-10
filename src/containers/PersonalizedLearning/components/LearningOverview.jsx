@@ -1,44 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import {
-  Row,
-  Col,
   Card,
 } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 import messages from '../messages';
-// Import the reusable LearningResultsFilter component from the local MFE source
-// Using a relative import here avoids needing the package to be installed in node_modules
-// Import local copy of the component
-import LearningResultsFilter from '../../../components/LearningResultsFilter/LearningResultsFilter';
 
 const LearningOverview = ({ data }) => {
   const { formatMessage } = useIntl();
   const [learningHoursData, setLearningHoursData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
   // Local filter state for the UI (must be declared at top-level to keep hooks order stable)
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedYear, setSelectedYear] = useState('all');
   const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear.toString());
 
   useEffect(() => {
     const fetchLearningHours = async () => {
       try {
+        // Only show full loading on initial load, not on year changes
+        if (!learningHoursData) {
+          setLoading(true);
+        } else {
+          setTableLoading(true);
+        }
+        
         const client = getAuthenticatedHttpClient();
         const baseUrl = getConfig().LMS_BASE_URL;
-        const response = await client.get(`${baseUrl}/api/learning_analytics/courses/`);
+        
+        // Add year parameter to API call if a specific year is selected
+        const params = new URLSearchParams();
+        if (selectedYear && selectedYear !== 'all') {
+          params.append('year', selectedYear);
+        }
+        
+        const url = `${baseUrl}/api/learning_analytics/courses/${params.toString() ? `?${params.toString()}` : ''}`;
+        const response = await client.get(url);
         setLearningHoursData(response.data);
+        
+        // Debug logging
+        if (response.data?.courses && response.data.courses.length > 0) {
+          console.log('Selected Year:', selectedYear);
+          console.log('Sample course data:', response.data.courses[0]);
+          console.log('Total courses count:', response.data.courses.length);
+        }
       } catch (err) {
         console.error('Failed to fetch learning hours:', err);
       } finally {
         setLoading(false);
+        setTableLoading(false);
       }
     };
 
     fetchLearningHours();
-  }, []);
+  }, [selectedYear]); // Only re-fetch when selectedYear changes
 
   if (loading) {
     return (
@@ -80,9 +98,46 @@ const LearningOverview = ({ data }) => {
       }
     }
 
-    // Year filter - only if course.year exists
-    if (selectedYear && selectedYear !== 'all' && course.year) {
-      if (course.year.toString() !== selectedYear.toString()) {
+    // Year filter - extract year from course enrollment/created date
+    if (selectedYear && selectedYear !== 'all') {
+      let courseYear = null;
+      
+      // Try multiple fields to get the year
+      if (course.year) {
+        courseYear = course.year.toString();
+      } else if (course.enrollment_date) {
+        try {
+          courseYear = new Date(course.enrollment_date).getFullYear().toString();
+        } catch (e) {
+          console.warn('Invalid enrollment_date:', course.enrollment_date);
+        }
+      } else if (course.enrolled_at) {
+        try {
+          courseYear = new Date(course.enrolled_at).getFullYear().toString();
+        } catch (e) {
+          console.warn('Invalid enrolled_at:', course.enrolled_at);
+        }
+      } else if (course.created_at) {
+        try {
+          courseYear = new Date(course.created_at).getFullYear().toString();
+        } catch (e) {
+          console.warn('Invalid created_at:', course.created_at);
+        }
+      } else if (course.start_date) {
+        try {
+          courseYear = new Date(course.start_date).getFullYear().toString();
+        } catch (e) {
+          console.warn('Invalid start_date:', course.start_date);
+        }
+      }
+      
+      // Only include courses that match the selected year
+      if (courseYear && courseYear !== selectedYear) {
+        return false;
+      }
+      
+      // If no year could be determined, exclude the course when filtering by year
+      if (!courseYear) {
         return false;
       }
     }
@@ -120,40 +175,71 @@ const LearningOverview = ({ data }) => {
       {/* Learning Process Statistics Section */}
       <Card className="mb-4 shadow-sm">
         <Card.Body className="p-4">
-          <div className="d-flex align-items-center mb-4 pb-3 border-bottom">
-            <div className="statistics-icon me-3">
-              <i className="fas fa-chart-line text-primary" style={{ fontSize: '24px' }} />
+          <div className="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+            <div className="d-flex align-items-center">
+              <div className="statistics-icon me-3">
+                <i className="fas fa-chart-line text-primary" style={{ fontSize: '24px' }} />
+              </div>
+              <h4 className="mb-0 fw-bold text-dark">QUÁ TRÌNH HỌC TẬP</h4>
             </div>
-            <h4 className="mb-0 fw-bold text-dark">QUÁ TRÌNH HỌC TẬP</h4>
           </div>
           
-          <Row className="g-4">
-            <Col md={4}>
-              <div className="stat-box">
-                <div className="stat-label text-muted mb-2">Số khóa học đã tham gia: <strong>{totalCourses} khóa</strong></div>
-                <div className="stat-label text-muted mb-2">Số khóa học đã hoàn thành: <strong>{completedCourses} khóa</strong></div>
-                <div className="stat-label text-muted">Thời gian trung bình hoàn thành khóa học: <strong>{averageHoursPerCourse}h/khóa</strong></div>
+          <div className="stats-grid-container">
+            <div className="stats-left">
+              <div className="stat-item">
+                <div className="stat-label text-muted">Số khóa tham gia: <strong>{totalCourses}</strong></div>
               </div>
-            </Col>
-            <Col md={4}>
-              <div className="stat-box">
-                <div className="stat-label text-muted mb-2">Số bài kiểm tra đã hoàn thành: <strong>{testsCompleted}</strong></div>
-                <div className="stat-label text-muted">Số chứng chỉ đã hoàn thành: <strong>{certificatesEarned} chứng chỉ</strong></div>
+              <div className="stat-item">
+                <div className="stat-label text-muted">Số khóa hoàn thành: <strong>{completedCourses} khóa</strong></div>
               </div>
-            </Col>
-            <Col md={4}>
-              <div className="stat-box">
-                {/* Replace simple buttons with the LearningResultsFilter dropdowns */}
-                <LearningResultsFilter
-                  selectedStatus={selectedStatus}
-                  selectedYear={selectedYear}
-                  onStatusChange={(value) => setSelectedStatus(value)}
-                  onYearChange={(value) => setSelectedYear(value)}
-                  className=""
-                />
+              <div className="stat-item">
+                <div className="stat-label text-muted">Thời gian trung bình: <strong>{averageHoursPerCourse}h/khóa</strong></div>
               </div>
-            </Col>
-          </Row>
+            </div>
+            
+            <div className="stats-middle">
+              <div className="stat-item">
+                <div className="stat-label text-muted">Số bài kiểm tra (đạt): <strong>{testsCompleted}</strong></div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-label text-muted">Số chứng chỉ (đạt): <strong>{certificatesEarned}</strong></div>
+              </div>
+            </div>
+            
+            <div className="stats-right">
+              <div className="filter-row">
+                <label className="filter-label">Trạng thái</label>
+                <select
+                  className="form-select form-select-sm"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  aria-label="Lọc theo trạng thái"
+                >
+                  <option value="all">Tất cả</option>
+                  <option value="enrolled">Đã ghi danh</option>
+                  <option value="in-progress">Đang học</option>
+                  <option value="failed-exam">Thi thất bại</option>
+                  <option value="success">Thành công</option>
+                </select>
+              </div>
+              <div className="filter-row">
+                <label className="filter-label">Năm</label>
+                <select
+                  className="form-select form-select-sm"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  aria-label="Lọc theo năm"
+                >
+                  <option value="all">Tất cả</option>
+                  <option value={currentYear.toString()}>Năm {currentYear}</option>
+                  <option value={(currentYear - 1).toString()}>Năm {currentYear - 1}</option>
+                  <option value={(currentYear - 2).toString()}>Năm {currentYear - 2}</option>
+                  <option value={(currentYear - 3).toString()}>Năm {currentYear - 3}</option>
+                  <option value={(currentYear - 4).toString()}>Năm {currentYear - 4}</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </Card.Body>
       </Card>
 
@@ -161,10 +247,23 @@ const LearningOverview = ({ data }) => {
       <Card className="shadow-sm">
         <Card.Body className="p-4">
           <h4 className="mb-4 fw-bold text-center text-dark">
-            THỐNG KÊ SỐ GIỜ HỌC CÁ NHÂN NĂM {currentYear}
+            THỐNG KÊ SỐ GIỜ HỌC CÁ NHÂN NĂM {selectedYear !== 'all' ? selectedYear : currentYear}
           </h4>
 
-          <div className="table-responsive">
+          <div className="table-responsive" style={{ position: 'relative', opacity: tableLoading ? 0.6 : 1 }}>
+            {tableLoading && (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 10,
+              }}>
+                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                  <span className="sr-only">Đang tải...</span>
+                </div>
+              </div>
+            )}
             <table className="table table-bordered table-hover learning-hours-table mb-4">
               <thead className="table-light">
                 <tr>

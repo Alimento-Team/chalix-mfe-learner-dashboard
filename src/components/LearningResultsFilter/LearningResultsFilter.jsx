@@ -19,6 +19,7 @@ const STATUS_OPTIONS = [
 const getYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const years = [{ value: 'all', label: 'Tất cả' }];
+  // Generate options for current year and 4 previous years
   for (let i = 0; i < 5; i++) {
     const year = currentYear - i;
     years.push({ value: year.toString(), label: `Năm ${year}` });
