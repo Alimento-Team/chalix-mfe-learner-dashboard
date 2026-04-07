@@ -1,0 +1,134 @@
+.learning-process-snapshot-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.section-divider {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e3e8ef;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #718096;
+        font-weight: 500;
+        min-width: 80px;
+    }
+}
+
+.score-card {
+    background: #f7fafc;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #edf2f7;
+        transform: translateY(-2px);
+    }
+
+    .week-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .score-value {
+        font-size: 1.25rem;
+    }
+
+    .score-badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+.vle-card {
+    background: #f7fafc;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #edf2f7;
+        transform: translateY(-2px);
+    }
+
+    .vle-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .vle-value {
+        font-size: 1rem;
+    }
+}
+
+.final-score-container {
+    border: 2px solid #e2e8f0 !important;
+
+    .final-score-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .final-score-badge {
+        font-size: 1.5rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .final-score-interpretation {
+        font-size: 0.95rem;
+        font-weight: 500;
+
+        p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        i {
+            font-size: 1.1rem;
+        }
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 0.9rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .info-label {
+            min-width: auto;
+        }
+    }
+
+    .final-score-badge {
+        font-size: 1.25rem;
+    }
+}

@@ -16,6 +16,7 @@ import LearningOverview from './components/LearningOverview';
 import CourseDetails from './components/CourseDetails';
 import CourseUnits from './components/CourseUnits';
 import EmotionRecognition from './components/EmotionRecognition';
+import LearningProcessSnapshot from './components/LearningProcessSnapshot';
 import CourseSidebar from './components/CourseSidebar';
 import LearningHoursProgressBar from '../../components/LearningHoursProgressBar';
 import { useLearningHours } from '../../data/hooks/useLearningHours';
@@ -112,6 +113,12 @@ const PersonalizedLearning = ({ courseId = null }) => {
                   Tổng quan
                 </button>
                 <button
+                  className={`tab-button ${activeTab === 'learningProcess' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('learningProcess')}
+                >
+                  Quá trình học tập
+                </button>
+                <button
                   className={`tab-button ${activeTab === 'courseDetails' ? 'active' : ''}`}
                   onClick={() => setActiveTab('courseDetails')}
                 >
@@ -129,6 +136,9 @@ const PersonalizedLearning = ({ courseId = null }) => {
               <div className="tab-content-container">
                 {activeTab === 'overview' && (
                   <LearningOverview data={learningData} />
+                )}
+                {activeTab === 'learningProcess' && (
+                  <LearningProcessSnapshot />
                 )}
                 {activeTab === 'courseDetails' && (
                   <CourseDetails data={learningData} />
