@@ -61,6 +61,21 @@ const messages = defineMessages({
     defaultMessage: 'Không thể tải dữ liệu học tập. Vui lòng thử lại sau.',
     description: 'Error message',
   },
+  snapshotTitle: {
+    id: 'personalized.learning.snapshot.title',
+    defaultMessage: 'Quá trình học tập',
+    description: 'Title for learner process snapshot card',
+  },
+  loading: {
+    id: 'personalized.learning.snapshot.loading',
+    defaultMessage: 'Đang tải...',
+    description: 'Loading text for learner process snapshot',
+  },
+  noDataMessage: {
+    id: 'personalized.learning.snapshot.noData',
+    defaultMessage: 'Dữ liệu quá trình học tập của bạn chưa có sẵn',
+    description: 'No data text for learner process snapshot',
+  },
 });
 
 export default messages;

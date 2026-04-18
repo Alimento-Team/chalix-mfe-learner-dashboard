@@ -124,12 +124,6 @@ const PersonalizedLearning = ({ courseId = null }) => {
                 >
                   Chi tiết khóa học
                 </button>
-                <button
-                  className={`tab-button ${activeTab === 'emotionRecognition' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('emotionRecognition')}
-                >
-                  Nhận diện cảm xúc
-                </button>
               </div>
 
               {/* Tab Content */}
