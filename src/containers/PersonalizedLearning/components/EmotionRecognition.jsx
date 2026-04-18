@@ -18,32 +18,35 @@ const EmotionRecognition = ({ data }) => {
 
   useEffect(() => {
     // Extract emotion data from the learning analytics data
-    if (data && data.emotion_analysis) {
-      setEmotionData(data.emotion_analysis);
-    }
+    setEmotionData(data?.emotion_analysis || null);
   }, [data]);
 
-  if (!emotionData) {
-    return (
-      <div className="text-center py-4">
-        <Alert variant="info">
-          <p className="mb-0">
-            Dữ liệu nhận diện cảm xúc sẽ được thu thập trong quá trình học tập.
-            Hãy tiếp tục học để xem phân tích cảm xúc của bạn.
-          </p>
-        </Alert>
-      </div>
-    );
-  }
+  const hasEmotionData = Boolean(emotionData);
+  const vleBreakdown = data?.vle_breakdown || {};
+  const totalVle = Number(vleBreakdown.total_vle || 0);
+  const materialsOpened = Number(vleBreakdown.materials_opened || 0);
+  const videosOpened = Number(vleBreakdown.videos_opened || 0);
+  const quizzesOpened = Number(vleBreakdown.quizzes_opened || 0);
 
-  const {
-    dominantEmotion = 'neutral',
-    emotionDistribution = {},
-    learningMoodTrends = [],
-    recommendations = [],
-    stressLevels = {},
-    engagementScore = 0,
-  } = emotionData;
+  const normalizedEmotionData = emotionData || {};
+  const dominantEmotion = normalizedEmotionData.dominantEmotion
+    || normalizedEmotionData.dominant_emotion
+    || 'neutral';
+  const emotionDistribution = normalizedEmotionData.emotionDistribution
+    || normalizedEmotionData.emotion_distribution
+    || {};
+  const learningMoodTrends = normalizedEmotionData.learningMoodTrends
+    || normalizedEmotionData.learning_mood_trends
+    || [];
+  const recommendations = normalizedEmotionData.recommendations || [];
+  const stressLevels = normalizedEmotionData.stressLevels
+    || normalizedEmotionData.stress_levels
+    || {};
+  const engagementScore = Number(
+    normalizedEmotionData.engagementScore
+    || normalizedEmotionData.engagement_score
+    || 0,
+  );
 
   const getEmotionIcon = (emotion) => {
     switch (emotion) {
@@ -82,6 +85,57 @@ const EmotionRecognition = ({ data }) => {
 
   return (
     <div className="emotion-recognition">
+      <Row className="mb-4">
+        <Col md={12}>
+          <Card>
+            <Card.Header>
+              <h6 className="mb-0">Chi tiết tương tác VLE theo loại học liệu</h6>
+            </Card.Header>
+            <Card.Body>
+              <Row className="g-3">
+                <Col md={3} sm={6} xs={12}>
+                  <div className="text-center border rounded p-3 h-100 bg-light">
+                    <div className="text-muted small">Tổng VLE</div>
+                    <div className="h3 mb-0 text-primary">{totalVle}</div>
+                  </div>
+                </Col>
+                <Col md={3} sm={6} xs={12}>
+                  <div className="text-center border rounded p-3 h-100">
+                    <div className="text-muted small">Mở slides/tài liệu</div>
+                    <div className="h4 mb-0">{materialsOpened}</div>
+                  </div>
+                </Col>
+                <Col md={3} sm={6} xs={12}>
+                  <div className="text-center border rounded p-3 h-100">
+                    <div className="text-muted small">Mở video</div>
+                    <div className="h4 mb-0">{videosOpened}</div>
+                  </div>
+                </Col>
+                <Col md={3} sm={6} xs={12}>
+                  <div className="text-center border rounded p-3 h-100">
+                    <div className="text-muted small">Mở quiz</div>
+                    <div className="h4 mb-0">{quizzesOpened}</div>
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {!hasEmotionData && (
+        <div className="text-center py-4">
+          <Alert variant="info">
+            <p className="mb-0">
+              Dữ liệu nhận diện cảm xúc sẽ được thu thập trong quá trình học tập.
+              Hãy tiếp tục học để xem phân tích cảm xúc của bạn.
+            </p>
+          </Alert>
+        </div>
+      )}
+
+      {hasEmotionData && (
+        <>
       {/* Current Emotional State */}
       <Row className="mb-4">
         <Col md={6}>
@@ -221,18 +275,23 @@ const EmotionRecognition = ({ data }) => {
               </Card.Header>
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  {learningMoodTrends.slice(-7).map((trend, index) => (
-                    <div key={`${trend.date}-${index}`} className="text-center">
+                  {learningMoodTrends.slice(-7).map((trend, index) => {
+                    const trendDate = trend?.date;
+                    const trendEmotion = trend?.dominantEmotion || trend?.dominant_emotion || 'neutral';
+
+                    return (
+                    <div key={`${trendDate || index}-${index}`} className="text-center">
                       <div className="mb-1" style={{ fontSize: '24px' }}>
-                        {getEmotionIcon(trend.dominantEmotion)}
+                        {getEmotionIcon(trendEmotion)}
                       </div>
                       <small className="text-muted">
-                        {new Date(trend.date).toLocaleDateString('vi-VN', {
+                        {trendDate ? new Date(trendDate).toLocaleDateString('vi-VN', {
                           weekday: 'short',
-                        })}
+                        }) : '--'}
                       </small>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </Card.Body>
             </Card>
@@ -279,12 +338,20 @@ const EmotionRecognition = ({ data }) => {
           </Col>
         </Row>
       )}
+        </>
+      )}
     </div>
   );
 };
 
 EmotionRecognition.propTypes = {
   data: PropTypes.shape({
+    vle_breakdown: PropTypes.shape({
+      total_vle: PropTypes.number,
+      materials_opened: PropTypes.number,
+      videos_opened: PropTypes.number,
+      quizzes_opened: PropTypes.number,
+    }),
     emotion_analysis: PropTypes.shape({
       dominant_emotion: PropTypes.string,
       emotion_distribution: PropTypes.objectOf(PropTypes.number),
