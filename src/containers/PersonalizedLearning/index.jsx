@@ -6,17 +6,12 @@ import {
   Container,
   Row,
   Col,
-  Card,
-  Tab,
-  Tabs,
 } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import LearningOverview from './components/LearningOverview';
 import CourseDetails from './components/CourseDetails';
-import CourseUnits from './components/CourseUnits';
 import EmotionRecognition from './components/EmotionRecognition';
-import LearningProcessSnapshot from './components/LearningProcessSnapshot';
 import CourseSidebar from './components/CourseSidebar';
 import LearningHoursProgressBar from '../../components/LearningHoursProgressBar';
 import { useLearningHours } from '../../data/hooks/useLearningHours';
@@ -42,10 +37,21 @@ const PersonalizedLearning = ({ courseId = null }) => {
         console.log('[PersonalizedLearning] Fetching learning analytics...');
         const client = getAuthenticatedHttpClient();
         const baseUrl = getConfig().LMS_BASE_URL;
-        // Fetch learning analytics data
-        const response = await client.get(`${baseUrl}/api/learning_analytics/dashboard/`);
-        console.log('[PersonalizedLearning] Data received:', response.data);
-        setLearningData(response.data);
+
+        const [dashboardResponse, coursesResponse] = await Promise.all([
+          client.get(`${baseUrl}/api/learning_analytics/dashboard/`),
+          client.get(`${baseUrl}/api/learning_analytics/courses/`),
+        ]);
+
+        const mergedData = {
+          ...dashboardResponse.data,
+          courses: coursesResponse.data?.courses || [],
+          tests_completed: coursesResponse.data?.tests_completed ?? dashboardResponse.data?.tests_completed,
+          certificates_earned: coursesResponse.data?.certificates_earned ?? dashboardResponse.data?.certificates_earned,
+        };
+
+        console.log('[PersonalizedLearning] Data received:', mergedData);
+        setLearningData(mergedData);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('[PersonalizedLearning] Failed to fetch learning analytics:', err);
@@ -138,14 +144,12 @@ const PersonalizedLearning = ({ courseId = null }) => {
                   <LearningOverview data={learningData} />
                 )}
                 {activeTab === 'learningProcess' && (
-                  <LearningProcessSnapshot courseId={courseId} />
+                  <div className="alert alert-info mb-0" role="alert">
+                    Thống kê quá trình học tập đã được chuyển sang tab "Chi tiết khóa học" để hiển thị theo từng khóa học.
+                  </div>
                 )}
                 {activeTab === 'courseDetails' && (
-                  courseId ? (
-                    <CourseUnits courseId={courseId} />
-                  ) : (
-                    <CourseDetails data={learningData} />
-                  )
+                  <CourseDetails data={learningData} selectedCourseId={courseId} />
                 )}
                 {activeTab === 'emotionRecognition' && (
                   <EmotionRecognition data={learningData} />

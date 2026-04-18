@@ -4,7 +4,7 @@ import { getConfig } from '@edx/frontend-platform';
 /**
  * Fetch the authenticated user's own learning process snapshot
  * @param {Object} params
- * @param {string} params.course_id - Optional current course ID for scoped prediction refresh
+ * @param {string} params.course_id - Selected course ID for course-scoped snapshot lookup
  * @returns {Promise} API response with student's learning process data
  */
 export const getStudentLearningProcess = async (params = {}) => {

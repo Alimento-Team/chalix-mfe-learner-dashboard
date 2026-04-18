@@ -16,11 +16,18 @@ export const useStudentLearningProcess = (courseId = null) => {
   const [error, setError] = useState(null);
 
   const fetchSnapshot = async () => {
+    if (!courseId) {
+      setSnapshot(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
-      const params = courseId ? { course_id: courseId } : {};
+      const params = { course_id: courseId };
       const data = await getStudentLearningProcess(params);
-      setSnapshot(data);
+      setSnapshot(data || null);
       setError(null);
     } catch (err) {
       // 404 is expected if no learning process snapshot exists yet
