@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { getConfig } from '@edx/frontend-platform';
 import { Card, Badge, Button } from '@openedx/paragon';
 import LearningProcessSnapshot from './LearningProcessSnapshot';
 import messages from '../messages';
@@ -41,6 +42,11 @@ const CourseDetails = ({ data, selectedCourseId }) => {
     } else if (status === 'not_started') {
       setFilteredCourses(courses.filter(course => course.status === 'not_started'));
     }
+  };
+
+  const openCourseDetail = (courseId) => {
+    const learningBaseUrl = (getConfig().LEARNING_BASE_URL || 'http://apps.local.openedx.io:2000').replace(/\/$/, '');
+    window.open(`${learningBaseUrl}/learning/course/${courseId}/home`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -175,9 +181,7 @@ const CourseDetails = ({ data, selectedCourseId }) => {
                         variant="outline-primary"
                         size="sm"
                         className="course-details-action-button"
-                        onClick={() => {
-                          window.open(`/courses/${course.course_id}`, '_blank');
-                        }}
+                        onClick={() => openCourseDetail(course.course_id)}
                       >
                         Xem
                       </Button>

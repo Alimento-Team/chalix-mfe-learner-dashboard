@@ -119,12 +119,6 @@ const PersonalizedLearning = ({ courseId = null }) => {
                   Tổng quan
                 </button>
                 <button
-                  className={`tab-button ${activeTab === 'learningProcess' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('learningProcess')}
-                >
-                  Quá trình học tập
-                </button>
-                <button
                   className={`tab-button ${activeTab === 'courseDetails' ? 'active' : ''}`}
                   onClick={() => setActiveTab('courseDetails')}
                 >
@@ -142,11 +136,6 @@ const PersonalizedLearning = ({ courseId = null }) => {
               <div className="tab-content-container">
                 {activeTab === 'overview' && (
                   <LearningOverview data={learningData} />
-                )}
-                {activeTab === 'learningProcess' && (
-                  <div className="alert alert-info mb-0" role="alert">
-                    Thống kê quá trình học tập đã được chuyển sang tab "Chi tiết khóa học" để hiển thị theo từng khóa học.
-                  </div>
                 )}
                 {activeTab === 'courseDetails' && (
                   <CourseDetails data={learningData} selectedCourseId={courseId} />
