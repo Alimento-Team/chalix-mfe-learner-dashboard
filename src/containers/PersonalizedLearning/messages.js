@@ -76,6 +76,16 @@ const messages = defineMessages({
     defaultMessage: 'Dữ liệu quá trình học tập của bạn chưa có sẵn',
     description: 'No data text for learner process snapshot',
   },
+  finalScoreActualLabel: {
+    id: 'personalized.learning.snapshot.finalScoreActualLabel',
+    defaultMessage: 'Điểm thực tế',
+    description: 'Label shown when the displayed final score is actual',
+  },
+  finalScorePredictedLabel: {
+    id: 'personalized.learning.snapshot.finalScorePredictedLabel',
+    defaultMessage: 'Điểm dự đoán',
+    description: 'Label shown when the displayed final score is predicted',
+  },
 });
 
 export default messages;

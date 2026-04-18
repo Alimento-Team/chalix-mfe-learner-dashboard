@@ -16,8 +16,10 @@ import { Search, Visibility, ArrowLeft } from '@openedx/paragon/icons';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 import CourseUnitDetailModal from './CourseUnitDetailModal';
+import { useFacialExpressionRecording } from '../../../data/hooks/useFacialExpressionRecording';
+import { trackMaterialOpened } from '../../../data/services/lms/studentProcessApi';
 
-const CourseUnits = ({ courseId }) => {
+const CourseUnits = ({ courseId, onEmotionRecorded }) => {
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +28,11 @@ const CourseUnits = ({ courseId }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    isRecording,
+    recordingError,
+    startTenSecondRecording,
+  } = useFacialExpressionRecording();
   const itemsPerPage = 4;
 
   const fetchCourseUnits = useCallback(async () => {
@@ -96,6 +103,34 @@ const CourseUnits = ({ courseId }) => {
     // Open modal with unit details
     setSelectedUnit(unit);
     setIsModalOpen(true);
+  };
+
+  const handleMaterialOpen = async (unit) => {
+    const unitId = unit?.unit_id || unit?.id;
+    if (!courseId || !unitId) {
+      return;
+    }
+
+    try {
+      await trackMaterialOpened({
+        course_id: courseId,
+        module_type: unit?.module_type || 'html',
+      });
+    } catch (err) {
+      // Non-blocking: learner should still open material even if tracking fails.
+      // eslint-disable-next-line no-console
+      console.warn('Failed to track material-open event', err);
+    }
+
+    const uploadResult = await startTenSecondRecording({
+      courseId,
+      unitId: String(unitId),
+      topicId: unit?.topic_id,
+    });
+
+    if (uploadResult && onEmotionRecorded) {
+      onEmotionRecorded(uploadResult);
+    }
   };
 
   const handleCloseModal = () => {
@@ -193,6 +228,18 @@ const CourseUnits = ({ courseId }) => {
                 </div>
 
                 {/* Course Units List */}
+                {isRecording && (
+                  <Alert variant="info" className="mb-3">
+                    Đang ghi hình 10 giây để phân tích cảm xúc cho tài liệu học tập...
+                  </Alert>
+                )}
+
+                {recordingError && (
+                  <Alert variant="warning" className="mb-3">
+                    Không thể ghi hình từ camera. Bạn vẫn có thể tiếp tục học bình thường.
+                  </Alert>
+                )}
+
                 <div className="course-units-list">
                   {units.length > 0 ? (
                     units.map((unit) => (
@@ -323,6 +370,7 @@ const CourseUnits = ({ courseId }) => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         courseUnit={selectedUnit}
+        onOpenMaterial={handleMaterialOpen}
       />
     </div>
   );
@@ -330,6 +378,11 @@ const CourseUnits = ({ courseId }) => {
 
 CourseUnits.propTypes = {
   courseId: PropTypes.string.isRequired,
+  onEmotionRecorded: PropTypes.func,
+};
+
+CourseUnits.defaultProps = {
+  onEmotionRecorded: null,
 };
 
 export default CourseUnits;

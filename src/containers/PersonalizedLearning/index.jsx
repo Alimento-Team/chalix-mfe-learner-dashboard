@@ -138,10 +138,14 @@ const PersonalizedLearning = ({ courseId = null }) => {
                   <LearningOverview data={learningData} />
                 )}
                 {activeTab === 'learningProcess' && (
-                  <LearningProcessSnapshot />
+                  <LearningProcessSnapshot courseId={courseId} />
                 )}
                 {activeTab === 'courseDetails' && (
-                  <CourseDetails data={learningData} />
+                  courseId ? (
+                    <CourseUnits courseId={courseId} />
+                  ) : (
+                    <CourseDetails data={learningData} />
+                  )
                 )}
                 {activeTab === 'emotionRecognition' && (
                   <EmotionRecognition data={learningData} />

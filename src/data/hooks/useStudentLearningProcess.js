@@ -10,7 +10,7 @@ import { getStudentLearningProcess } from '../services/lms/studentProcessApi';
  *   - error: Error object if fetch failed, null otherwise
  *   - refetch: Function to manually refetch the data
  */
-export const useStudentLearningProcess = () => {
+export const useStudentLearningProcess = (courseId = null) => {
   const [snapshot, setSnapshot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +18,8 @@ export const useStudentLearningProcess = () => {
   const fetchSnapshot = async () => {
     try {
       setLoading(true);
-      const data = await getStudentLearningProcess();
+      const params = courseId ? { course_id: courseId } : {};
+      const data = await getStudentLearningProcess(params);
       setSnapshot(data);
       setError(null);
     } catch (err) {
@@ -38,7 +39,7 @@ export const useStudentLearningProcess = () => {
 
   useEffect(() => {
     fetchSnapshot();
-  }, []);
+  }, [courseId]);
 
   const refetch = () => {
     fetchSnapshot();

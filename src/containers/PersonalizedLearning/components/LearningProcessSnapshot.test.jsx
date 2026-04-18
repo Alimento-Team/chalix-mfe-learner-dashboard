@@ -11,6 +11,8 @@ const defaultMessages = {
   loading: { defaultMessage: 'Loading...' },
   errorMessage: { defaultMessage: 'Failed to load data' },
   noDataMessage: { defaultMessage: 'No data available' },
+  finalScoreActualLabel: { defaultMessage: 'Actual Score' },
+  finalScorePredictedLabel: { defaultMessage: 'Predicted Score' },
 };
 
 const renderWithIntl = (component) => {
@@ -43,6 +45,9 @@ describe('LearningProcessSnapshot', () => {
     vle_2: 52,
     vle_3: 48,
     final_score: 8,
+    predicted_final_score: 8.25,
+    score_type: 'actual',
+    effective_final_score: 8,
   };
 
   beforeEach(() => {
@@ -187,5 +192,40 @@ describe('LearningProcessSnapshot', () => {
     // Check for card structure
     const card = screen.getByText('Learning Process').closest('.learning-process-snapshot-card');
     expect(card).toBeInTheDocument();
+  });
+
+  it('should display actual score label when score is actual', () => {
+    useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
+      snapshot: mockSnapshot,
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    renderWithIntl(<LearningProcessSnapshot />);
+
+    expect(screen.getByText('Actual Score')).toBeInTheDocument();
+  });
+
+  it('should display predicted score label when score is predicted', () => {
+    const predictedSnapshot = {
+      ...mockSnapshot,
+      final_score: null,
+      predicted_final_score: 7.4,
+      effective_final_score: 7.4,
+      score_type: 'predicted',
+    };
+
+    useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
+      snapshot: predictedSnapshot,
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    renderWithIntl(<LearningProcessSnapshot />);
+
+    expect(screen.getByText('Predicted Score')).toBeInTheDocument();
+    expect(screen.getByText(/7.4\/10/)).toBeInTheDocument();
   });
 });

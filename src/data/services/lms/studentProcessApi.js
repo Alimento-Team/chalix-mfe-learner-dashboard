@@ -3,13 +3,36 @@ import { getConfig } from '@edx/frontend-platform';
 
 /**
  * Fetch the authenticated user's own learning process snapshot
+ * @param {Object} params
+ * @param {string} params.course_id - Optional current course ID for scoped prediction refresh
  * @returns {Promise} API response with student's learning process data
  */
-export const getStudentLearningProcess = async () => {
+export const getStudentLearningProcess = async (params = {}) => {
   const client = getAuthenticatedHttpClient();
   const baseUrl = getConfig().LMS_BASE_URL;
+  const queryString = new URLSearchParams(params).toString();
+  const url = queryString
+    ? `${baseUrl}/api/learning_analytics/student-learning-process/me/?${queryString}`
+    : `${baseUrl}/api/learning_analytics/student-learning-process/me/`;
   const response = await client.get(
-    `${baseUrl}/api/learning_analytics/student-learning-process/me/`,
+    url,
+  );
+  return response.data;
+};
+
+/**
+ * Track an explicit material-open event in LMS analytics.
+ * @param {Object} payload
+ * @param {string} payload.course_id
+ * @param {string} payload.module_type
+ * @returns {Promise}
+ */
+export const trackMaterialOpened = async (payload) => {
+  const client = getAuthenticatedHttpClient();
+  const baseUrl = getConfig().LMS_BASE_URL;
+  const response = await client.post(
+    `${baseUrl}/api/learning_analytics/material-open/`,
+    payload,
   );
   return response.data;
 };
@@ -57,4 +80,5 @@ export default {
   getStudentLearningProcess,
   getStudentLearningProcessList,
   getStudentLearningProcessAggregate,
+  trackMaterialOpened,
 };

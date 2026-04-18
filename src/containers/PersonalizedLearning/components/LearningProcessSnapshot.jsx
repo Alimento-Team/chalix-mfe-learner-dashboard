@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import {
   Card,
@@ -15,9 +16,14 @@ import './LearningProcessSnapshot.scss';
  * Component to display a student's learning process snapshot
  * Shows weekly scores, VLE engagement, and final score with categorical information
  */
-const LearningProcessSnapshot = () => {
+const LearningProcessSnapshot = ({ courseId }) => {
   const { formatMessage } = useIntl();
-  const { snapshot, loading, error } = useStudentLearningProcess();
+  const { snapshot, loading, error } = useStudentLearningProcess(courseId);
+
+  const displayedFinalScore = snapshot?.effective_final_score ?? snapshot?.final_score ?? snapshot?.predicted_final_score;
+  const finalScoreType = snapshot?.score_type || (snapshot?.final_score !== null && snapshot?.final_score !== undefined
+    ? 'actual'
+    : (snapshot?.predicted_final_score !== null && snapshot?.predicted_final_score !== undefined ? 'predicted' : 'unknown'));
 
   /**
    * Get score badge color based on score value
@@ -214,27 +220,34 @@ const LearningProcessSnapshot = () => {
                 Điểm cuối cùng
               </h6>
               <div className="final-score-container p-4 rounded text-center">
-                {snapshot.final_score !== null && snapshot.final_score !== undefined ? (
+                {displayedFinalScore !== null && displayedFinalScore !== undefined ? (
                   <>
+                    <div className="mb-3">
+                      <Badge variant={finalScoreType === 'predicted' ? 'info' : 'success'}>
+                        {finalScoreType === 'predicted'
+                          ? formatMessage(messages.finalScorePredictedLabel)
+                          : formatMessage(messages.finalScoreActualLabel)}
+                      </Badge>
+                    </div>
                     <div className="final-score-display mb-3">
-                      <Badge variant={getScoreBadgeVariant(snapshot.final_score)} className="final-score-badge">
-                        {snapshot.final_score}/10
+                      <Badge variant={getScoreBadgeVariant(displayedFinalScore)} className="final-score-badge">
+                        {displayedFinalScore}/10
                       </Badge>
                     </div>
                     <div className="final-score-interpretation">
-                      {snapshot.final_score >= 8 && (
+                      {displayedFinalScore >= 8 && (
                         <p className="text-success mb-0">
                           <i className="fas fa-check-circle mr-2" />
                           Xuất sắc!
                         </p>
                       )}
-                      {snapshot.final_score >= 5 && snapshot.final_score < 8 && (
+                      {displayedFinalScore >= 5 && displayedFinalScore < 8 && (
                         <p className="text-warning mb-0">
                           <i className="fas fa-star mr-2" />
                           Tốt
                         </p>
                       )}
-                      {snapshot.final_score < 5 && (
+                      {displayedFinalScore < 5 && (
                         <p className="text-danger mb-0">
                           <i className="fas fa-exclamation-circle mr-2" />
                           Cần cải thiện
@@ -252,6 +265,14 @@ const LearningProcessSnapshot = () => {
       </Card.Body>
     </Card>
   );
+};
+
+LearningProcessSnapshot.propTypes = {
+  courseId: PropTypes.string,
+};
+
+LearningProcessSnapshot.defaultProps = {
+  courseId: null,
 };
 
 export default LearningProcessSnapshot;

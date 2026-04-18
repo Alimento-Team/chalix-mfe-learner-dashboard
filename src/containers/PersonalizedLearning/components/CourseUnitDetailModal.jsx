@@ -16,6 +16,7 @@ const CourseUnitDetailModal = ({
   isOpen,
   onClose,
   courseUnit,
+  onOpenMaterial,
 }) => {
   if (!courseUnit) {
     return null;
@@ -176,6 +177,17 @@ const CourseUnitDetailModal = ({
                   </div>
                 </Col>
               </Row>
+
+              <Row className="mt-4">
+                <Col xs={12} className="text-end">
+                  <Button
+                    variant="primary"
+                    onClick={() => onOpenMaterial && onOpenMaterial(courseUnit)}
+                  >
+                    Mở học liệu
+                  </Button>
+                </Col>
+              </Row>
             </Container>
           </div>
         </div>
@@ -187,6 +199,7 @@ const CourseUnitDetailModal = ({
 CourseUnitDetailModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onOpenMaterial: PropTypes.func,
   courseUnit: PropTypes.shape({
     title: PropTypes.string,
     startDate: PropTypes.string,
@@ -195,6 +208,10 @@ CourseUnitDetailModal.propTypes = {
     evaluation: PropTypes.string,
     progress: PropTypes.number,
   }),
+};
+
+CourseUnitDetailModal.defaultProps = {
+  onOpenMaterial: null,
 };
 
 export default CourseUnitDetailModal;
