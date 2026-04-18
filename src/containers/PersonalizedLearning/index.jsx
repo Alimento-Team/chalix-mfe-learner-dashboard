@@ -141,7 +141,7 @@ const PersonalizedLearning = ({ courseId = null }) => {
                   <CourseDetails data={learningData} selectedCourseId={courseId} />
                 )}
                 {activeTab === 'emotionRecognition' && (
-                  <EmotionRecognition data={learningData} />
+                  <EmotionRecognition data={learningData} courseId={courseId} />
                 )}
               </div>
             </div>

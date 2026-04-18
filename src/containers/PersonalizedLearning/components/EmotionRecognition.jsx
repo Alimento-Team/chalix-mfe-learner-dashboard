@@ -6,14 +6,16 @@ import {
   Col,
   ProgressBar,
   Alert,
+  Spinner,
 } from '@openedx/paragon';
 import {
   TrendingUp,
   Psychology,
   Insights,
 } from '@openedx/paragon/icons';
+import { useStudentLearningProcess } from '../../../data/hooks/useStudentLearningProcess';
 
-const EmotionRecognition = ({ data }) => {
+const EmotionRecognition = ({ data, courseId }) => {
   const [emotionData, setEmotionData] = useState(null);
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const EmotionRecognition = ({ data }) => {
   }, [data]);
 
   const hasEmotionData = Boolean(emotionData);
+  const { snapshot: processSnapshot, loading: snapshotLoading } = useStudentLearningProcess(courseId);
   const vleBreakdown = data?.vle_breakdown || {};
   const totalVle = Number(vleBreakdown.total_vle || 0);
   const materialsOpened = Number(vleBreakdown.materials_opened || 0);
@@ -118,6 +121,67 @@ const EmotionRecognition = ({ data }) => {
                   </div>
                 </Col>
               </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Đánh giá cảm xúc sub-section */}
+      <Row className="mb-4">
+        <Col md={12}>
+          <Card>
+            <Card.Header>
+              <h6 className="mb-0">Đánh giá cảm xúc</h6>
+            </Card.Header>
+            <Card.Body>
+              {snapshotLoading ? (
+                <div className="text-center py-3">
+                  <Spinner animation="border" size="sm" role="status" />
+                  <span className="ms-2 text-muted small">Đang tải...</span>
+                </div>
+              ) : (processSnapshot?.eye_score != null
+                    || processSnapshot?.nose_score != null
+                    || processSnapshot?.mouth_score != null
+                    || processSnapshot?.emotion_score != null) ? (
+                <Row className="g-3">
+                  <Col md={3} sm={6} xs={12}>
+                    <div className="text-center border rounded p-3 h-100">
+                      <div className="text-muted small">Mắt (Eye)</div>
+                      <div className="h4 mb-0 text-info">
+                        {processSnapshot?.eye_score != null ? Number(processSnapshot.eye_score).toFixed(2) : '--'}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={3} sm={6} xs={12}>
+                    <div className="text-center border rounded p-3 h-100">
+                      <div className="text-muted small">Mũi (Nose)</div>
+                      <div className="h4 mb-0 text-info">
+                        {processSnapshot?.nose_score != null ? Number(processSnapshot.nose_score).toFixed(2) : '--'}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={3} sm={6} xs={12}>
+                    <div className="text-center border rounded p-3 h-100">
+                      <div className="text-muted small">Miệng (Mouth)</div>
+                      <div className="h4 mb-0 text-info">
+                        {processSnapshot?.mouth_score != null ? Number(processSnapshot.mouth_score).toFixed(2) : '--'}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={3} sm={6} xs={12}>
+                    <div className="text-center border rounded p-3 h-100 bg-light">
+                      <div className="text-muted small">Tổng cảm xúc</div>
+                      <div className="h3 mb-0 text-primary">
+                        {processSnapshot?.emotion_score != null ? Number(processSnapshot.emotion_score).toFixed(2) : '--'}
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              ) : (
+                <p className="text-muted text-center mb-0 small">
+                  Chưa có dữ liệu đánh giá cảm xúc. Dữ liệu sẽ xuất hiện sau khi mô hình dự đoán cảm xúc chạy.
+                </p>
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -344,7 +408,12 @@ const EmotionRecognition = ({ data }) => {
   );
 };
 
+EmotionRecognition.defaultProps = {
+  courseId: null,
+};
+
 EmotionRecognition.propTypes = {
+  courseId: PropTypes.string,
   data: PropTypes.shape({
     vle_breakdown: PropTypes.shape({
       total_vle: PropTypes.number,
