@@ -121,7 +121,13 @@ const CourseSidebar = ({ data }) => {
   // Extract course data - NO MOCK DATA
   const currentCourses = data?.courses?.filter(c => c.status === 'in_progress') || [];
   const completedCourses = data?.courses?.filter(c => c.status === 'completed') || [];
-  const recommendedCourses = []; // Leave empty for now as requested
+  const recommendedCourses = (data?.recommendedCourses || []).map(course => ({
+    ...course,
+    course_org: course.instructor_name || 'Organization',
+    progress_percentage: 0,
+    match_score: (course.confidence_score || 0) * 100,
+    time_spent: 0,
+  }));
 
   return (
     <div className="course-sidebar">
@@ -201,18 +207,26 @@ const CourseSidebar = ({ data }) => {
         </Card>
       </div>
 
-      {/* Recommended Courses Section - Empty for now */}
+      {/* Recommended Courses Section */}
       <div className="sidebar-section mb-4">
         <h5 className="sidebar-section-title mb-3">
           Gợi ý khóa học
         </h5>
         <Card className="shadow-sm border-0">
           <Card.Body className="p-0">
-            <div className="p-4 text-center">
-              <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>
-                Chưa có gợi ý khóa học nào
-              </p>
-            </div>
+            {recommendedCourses.length > 0 ? (
+              <div className="p-3">
+                {recommendedCourses.map((course, index) => (
+                  <CourseCard key={course.course_id || index} course={course} type="recommended" />
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 text-center">
+                <p className="text-muted mb-0" style={{ fontSize: '0.875rem' }}>
+                  Chưa có gợi ý khóa học nào
+                </p>
+              </div>
+            )}
           </Card.Body>
         </Card>
       </div>

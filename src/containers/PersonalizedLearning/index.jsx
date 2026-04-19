@@ -38,14 +38,16 @@ const PersonalizedLearning = ({ courseId = null }) => {
         const client = getAuthenticatedHttpClient();
         const baseUrl = getConfig().LMS_BASE_URL;
 
-        const [dashboardResponse, coursesResponse] = await Promise.all([
+        const [dashboardResponse, coursesResponse, recommendationsResponse] = await Promise.all([
           client.get(`${baseUrl}/api/learning_analytics/dashboard/`),
           client.get(`${baseUrl}/api/learning_analytics/courses/`),
+          client.get(`${baseUrl}/api/learning_analytics/recommendations/?limit=5`),
         ]);
 
         const mergedData = {
           ...dashboardResponse.data,
           courses: coursesResponse.data?.courses || [],
+          recommendedCourses: recommendationsResponse.data || [],
           tests_completed: coursesResponse.data?.tests_completed ?? dashboardResponse.data?.tests_completed,
           certificates_earned: coursesResponse.data?.certificates_earned ?? dashboardResponse.data?.certificates_earned,
         };
