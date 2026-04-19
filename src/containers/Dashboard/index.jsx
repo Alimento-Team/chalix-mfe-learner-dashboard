@@ -16,10 +16,10 @@ import hooks from './hooks';
 import './index.scss';
 
 // Map Vietnamese tab names to backend filter types
-// Note: ALL tabs use 'all_visible' to get all courses user can see
-// Frontend (CoursesPanel) applies category-specific filtering to show correct courses per tab
+// Note: AI suggested now uses a dedicated ranked recommendation filter from backend.
+// Other tabs continue to use all_visible and apply category-specific frontend filtering.
 const TAB_FILTER_MAP = {
-  'ai-suggested': 'all_visible',  // AI suggested - show all visible courses
+  'ai-suggested': 'ai_recommended', // AI suggested - backend ranked recommendations
   'internal': 'all_visible',      // Khoá học nội bộ - frontend filters for org courses
   'elective': 'all_visible',      // Khoá học chung - frontend filters for elective courses
   'required': 'all_visible',      // Khóa học bắt buộc - frontend filters for mandatory courses

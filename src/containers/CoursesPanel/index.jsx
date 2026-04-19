@@ -27,8 +27,8 @@ export const CoursesPanel = ({ activeCategory = 'ai-suggested' }) => {
   const hasCourses = reduxHooks.useHasCourses();
   const courseListData = useCourseListData();
   
-  // Note: Backend returns ALL visible courses for all tabs (via all_visible filter)
-  // Frontend applies category-specific filtering to show correct courses per tab
+  // Note: AI suggested uses backend-ranked recommendations.
+  // Other tabs receive all_visible data and apply category-specific frontend filtering.
   // This allows courses to appear in multiple tabs (e.g., Bo course in AI suggested + category tab)
   
   const getFilteredCourses = () => {
