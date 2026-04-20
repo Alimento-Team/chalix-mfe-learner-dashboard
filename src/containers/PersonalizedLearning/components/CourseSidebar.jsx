@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { getConfig } from '@edx/frontend-platform';
 import {
   Card,
   Badge,
@@ -88,7 +89,8 @@ const CourseCard = ({ course, type = 'current' }) => (
           style={{ fontSize: '12px', padding: '4px 8px' }}
           onClick={() => {
             if (type === 'recommended') {
-              window.open(`/courses/${course.course_id}/about`, '_blank');
+              const learningBaseUrl = (getConfig().LEARNING_BASE_URL || window.location.origin).replace(/\/$/, '');
+              window.open(`${learningBaseUrl}/learning/course/${course.course_id}`, '_blank', 'noopener,noreferrer');
             } else {
               window.open(`/course/${course.course_id}`, '_blank');
             }
