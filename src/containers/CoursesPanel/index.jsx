@@ -30,7 +30,7 @@ import './index.scss';
 const AIRecommendedCourseCard = ({ course }) => {
   const handleView = () => {
     const learningBaseUrl = (getConfig().LEARNING_BASE_URL || window.location.origin).replace(/\/$/, '');
-    window.open(`${learningBaseUrl}/learning/course/${course.course_id}`, '_blank', 'noopener,noreferrer');
+    window.open(`${learningBaseUrl}/course/${course.course_id}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
