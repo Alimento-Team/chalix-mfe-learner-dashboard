@@ -23,13 +23,14 @@ const CourseDetails = ({ data, selectedCourseId }) => {
   useEffect(() => {
     if (selectedCourseId) {
       setActiveCourseId(selectedCourseId);
-      return;
     }
+  }, [selectedCourseId]);
 
+  useEffect(() => {
     if (!activeCourseId && courses.length > 0) {
       setActiveCourseId(courses[0].course_id);
     }
-  }, [selectedCourseId, courses, activeCourseId]);
+  }, [courses, activeCourseId]);
 
   const handleFilterChange = (status) => {
     setFilterStatus(status);
