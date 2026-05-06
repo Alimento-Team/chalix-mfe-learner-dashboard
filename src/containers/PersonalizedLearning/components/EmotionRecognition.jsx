@@ -5,7 +5,6 @@ import {
   Row,
   Col,
   ProgressBar,
-  Alert,
   Spinner,
 } from '@openedx/paragon';
 import {
@@ -178,25 +177,12 @@ const EmotionRecognition = ({ data, courseId }) => {
                   </Col>
                 </Row>
               ) : (
-                <p className="text-muted text-center mb-0 small">
-                  Chưa có dữ liệu đánh giá cảm xúc. Dữ liệu sẽ xuất hiện sau khi mô hình dự đoán cảm xúc chạy.
-                </p>
+                null
               )}
             </Card.Body>
           </Card>
         </Col>
       </Row>
-
-      {!hasEmotionData && (
-        <div className="text-center py-4">
-          <Alert variant="info">
-            <p className="mb-0">
-              Dữ liệu nhận diện cảm xúc sẽ được thu thập trong quá trình học tập.
-              Hãy tiếp tục học để xem phân tích cảm xúc của bạn.
-            </p>
-          </Alert>
-        </div>
-      )}
 
       {hasEmotionData && (
         <>

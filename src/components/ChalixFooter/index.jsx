@@ -15,17 +15,19 @@ const ChalixFooter = () => {
   // Get platform/site name for copyright
   const siteName = config.SITE_NAME || platformSettings?.siteName || 'Chalix';
   
-  // Get responsible person or admin name, fallback to authenticated user or default
-  const responsiblePerson = platformSettings?.adminName || 
-                           authenticatedUser?.name || 
-                           authenticatedUser?.username || 
-                           'Administrator';
+  // Show the responsible-person line only when an explicit value exists.
+  const responsiblePerson = (
+    platformSettings?.adminName
+    || authenticatedUser?.name
+    || authenticatedUser?.username
+    || ''
+  ).trim();
 
   return (
     <div className="chalix-footer">
       <div className="chalix-footer-container">
         <div className="footer-content">
-          <p>Chịu trách nhiệm nội dung bởi {responsiblePerson}</p>
+          {responsiblePerson && <p>Chịu trách nhiệm nội dung bởi {responsiblePerson}</p>}
           <p>Copyright © {currentYear} {siteName}</p>
         </div>
       </div>
