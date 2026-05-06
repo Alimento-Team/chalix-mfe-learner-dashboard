@@ -38,8 +38,10 @@ const PersonalizedLearning = ({ courseId = null }) => {
         const client = getAuthenticatedHttpClient();
         const baseUrl = getConfig().LMS_BASE_URL;
 
+        const dashboardParams = courseId ? { params: { course_id: courseId } } : undefined;
+
         const [dashboardResponse, coursesResponse, recommendationsResponse] = await Promise.all([
-          client.get(`${baseUrl}/api/learning_analytics/dashboard/`),
+          client.get(`${baseUrl}/api/learning_analytics/dashboard/`, dashboardParams),
           client.get(`${baseUrl}/api/learning_analytics/courses/`),
           client.get(`${baseUrl}/api/learning_analytics/recommendations/?limit=5`),
         ]);
@@ -71,7 +73,7 @@ const PersonalizedLearning = ({ courseId = null }) => {
       console.log('[PersonalizedLearning] No authenticated user');
       setLoading(false);
     }
-  }, [authenticatedUser]);
+  }, [authenticatedUser, courseId]);
 
   if (loading) {
     return (

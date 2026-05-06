@@ -20,6 +20,19 @@ const LearningProcessSnapshot = ({ courseId }) => {
   const { formatMessage } = useIntl();
   const { snapshot, loading, error } = useStudentLearningProcess(courseId);
 
+  const formatScoreValue = (value) => {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) {
+      return value;
+    }
+
+    return numericValue.toString();
+  };
+
   const displayedFinalScore = snapshot?.effective_final_score ?? snapshot?.final_score ?? snapshot?.predicted_final_score;
   const finalScoreType = snapshot?.score_type || (snapshot?.final_score !== null && snapshot?.final_score !== undefined
     ? 'actual'
@@ -162,6 +175,7 @@ const LearningProcessSnapshot = ({ courseId }) => {
                 {[1, 2, 3].map((week) => {
                   const scoreKey = `week_${week}`;
                   const score = snapshot[scoreKey];
+                  const formattedScore = formatScoreValue(score);
                   return (
                     <Col xs={12} sm={6} lg={4} key={scoreKey}>
                       <div className="score-card text-center p-3 border rounded">
@@ -169,7 +183,7 @@ const LearningProcessSnapshot = ({ courseId }) => {
                         <div className="score-value mb-2">
                           {score !== null && score !== undefined ? (
                             <Badge variant={getScoreBadgeVariant(score)} className="score-badge">
-                              {score}/10
+                              {formattedScore}/10
                             </Badge>
                           ) : (
                             <Badge variant="secondary">N/A</Badge>
@@ -231,7 +245,7 @@ const LearningProcessSnapshot = ({ courseId }) => {
                     </div>
                     <div className="final-score-display mb-3">
                       <Badge variant={getScoreBadgeVariant(displayedFinalScore)} className="final-score-badge">
-                        {displayedFinalScore}/10
+                        {formatScoreValue(displayedFinalScore)}/10
                       </Badge>
                     </div>
                     <div className="final-score-interpretation">
