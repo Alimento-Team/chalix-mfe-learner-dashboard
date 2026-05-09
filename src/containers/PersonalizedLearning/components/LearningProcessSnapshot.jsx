@@ -38,6 +38,36 @@ const LearningProcessSnapshot = ({ courseId }) => {
     ? 'actual'
     : (snapshot?.predicted_final_score !== null && snapshot?.predicted_final_score !== undefined ? 'predicted' : 'unknown'));
 
+  const getEstimatedWeekScore = (weekNumber) => {
+    if (!snapshot) {
+      return null;
+    }
+
+    const candidateKeys = [
+      `estimated_week_${weekNumber}`,
+      `week_${weekNumber}_estimated`,
+      `predicted_week_${weekNumber}`,
+      `week_${weekNumber}_predicted`,
+    ];
+
+    for (const key of candidateKeys) {
+      const value = snapshot[key];
+      if (value !== null && value !== undefined && value !== '') {
+        return value;
+      }
+    }
+
+    return null;
+  };
+
+  const getEstimatedFinalScore = () => {
+    const value = snapshot?.predicted_final_score;
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    return value;
+  };
+
   /**
    * Get score badge color based on score value
    * @param {number} score - Score value (0-10)
@@ -176,6 +206,8 @@ const LearningProcessSnapshot = ({ courseId }) => {
                   const scoreKey = `week_${week}`;
                   const score = snapshot[scoreKey];
                   const formattedScore = formatScoreValue(score);
+                  const estimatedWeekScore = getEstimatedWeekScore(week);
+                  const formattedEstimatedScore = formatScoreValue(estimatedWeekScore);
                   return (
                     <Col xs={12} sm={6} lg={4} key={scoreKey}>
                       <div className="score-card text-center p-3 border rounded">
@@ -186,7 +218,19 @@ const LearningProcessSnapshot = ({ courseId }) => {
                               {formattedScore}/10
                             </Badge>
                           ) : (
-                            <Badge variant="secondary">N/A</Badge>
+                            <Badge variant="secondary" className="score-badge">N/A</Badge>
+                          )}
+                        </div>
+                        <div className="estimated-score-row">
+                          <span className="estimated-score-label">Ước tính:</span>
+                          {estimatedWeekScore !== null && estimatedWeekScore !== undefined ? (
+                            <Badge variant="info" className="estimated-score-badge">
+                              {formattedEstimatedScore}/10
+                            </Badge>
+                          ) : (
+                            <Badge variant="light" className="estimated-score-badge estimated-score-empty">
+                              ~/10
+                            </Badge>
                           )}
                         </div>
                       </div>
@@ -247,6 +291,18 @@ const LearningProcessSnapshot = ({ courseId }) => {
                       <Badge variant={getScoreBadgeVariant(displayedFinalScore)} className="final-score-badge">
                         {formatScoreValue(displayedFinalScore)}/10
                       </Badge>
+                    </div>
+                    <div className="estimated-final-score-row mb-3">
+                      <span className="estimated-final-score-label">Điểm cuối ước tính:</span>
+                      {getEstimatedFinalScore() !== null ? (
+                        <Badge variant="info" className="estimated-final-score-badge">
+                          {formatScoreValue(getEstimatedFinalScore())}/10
+                        </Badge>
+                      ) : (
+                        <Badge variant="light" className="estimated-final-score-badge estimated-score-empty">
+                          ~/10
+                        </Badge>
+                      )}
                     </div>
                     <div className="final-score-interpretation">
                       {displayedFinalScore >= 8 && (
