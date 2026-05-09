@@ -120,16 +120,59 @@ CourseCard.propTypes = {
 const CourseSidebar = ({ data }) => {
   const { formatMessage } = useIntl();
 
+  const normalizeStatus = (value) => String(value || '').trim().toLowerCase();
+
+  const isInProgressCourse = (course) => {
+    const status = normalizeStatus(course?.status);
+    const statusText = normalizeStatus(course?.status_text);
+    const progress = Number(course?.progress_percentage || 0);
+
+    if (status === 'in_progress' || status === 'in-progress') {
+      return true;
+    }
+
+    if (statusText.includes('dang hoc') || statusText.includes('đang học')) {
+      return true;
+    }
+
+    return progress > 0 && progress < 100;
+  };
+
   // Extract course data - NO MOCK DATA
-  const currentCourses = data?.courses?.filter(c => c.status === 'in_progress') || [];
+  const currentCourses = data?.courses?.filter(isInProgressCourse) || [];
   const completedCourses = data?.courses?.filter(c => c.status === 'completed') || [];
-  const recommendedCourses = (data?.recommendedCourses || []).map(course => ({
+  const recommendedCoursesRaw = (data?.recommendedCourses || []).map(course => ({
     ...course,
     course_org: course.instructor_name || 'Organization',
     progress_percentage: 0,
     match_score: (course.confidence_score || 0) * 100,
     time_spent: 0,
   }));
+
+  // Prioritize in-progress courses in AI suggestions and deduplicate by course_id.
+  const inProgressFirst = currentCourses.map(course => ({
+    ...course,
+    course_org: course.course_org || 'Organization',
+    match_score: Number(course.progress_percentage || 0) + 100,
+    __fromInProgress: true,
+  }));
+
+  const dedupedByCourseId = new Map();
+  [...inProgressFirst, ...recommendedCoursesRaw].forEach((course) => {
+    const key = course?.course_id || `fallback-${Math.random()}`;
+    if (!dedupedByCourseId.has(key)) {
+      dedupedByCourseId.set(key, course);
+    }
+  });
+
+  const recommendedCourses = Array.from(dedupedByCourseId.values()).sort((a, b) => {
+    const aPriority = a.__fromInProgress ? 1 : 0;
+    const bPriority = b.__fromInProgress ? 1 : 0;
+    if (aPriority !== bPriority) {
+      return bPriority - aPriority;
+    }
+    return Number(b.match_score || 0) - Number(a.match_score || 0);
+  });
 
   return (
     <div className="course-sidebar">
