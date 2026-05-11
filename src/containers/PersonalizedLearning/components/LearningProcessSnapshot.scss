@@ -89,7 +89,9 @@
         align-items: center;
         justify-content: center;
         min-width: 4.2rem;
-        max-width: none;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
         line-height: 1;
     }
 
@@ -174,6 +176,9 @@
         padding: 0.75rem 1.5rem;
         white-space: nowrap;
         word-break: normal;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
         line-height: 1;
     }
 

@@ -30,6 +30,14 @@ const EmotionRecognition = ({ data, courseId }) => {
   const videosOpened = Number(vleBreakdown.videos_opened || 0);
   const quizzesOpened = Number(vleBreakdown.quizzes_opened || 0);
 
+  // Debug logging
+  if (courseId) {
+    console.log('[EmotionRecognition] Debug info for courseId:', courseId);
+    console.log('[EmotionRecognition] Full data object:', data);
+    console.log('[EmotionRecognition] vleBreakdown:', vleBreakdown);
+    console.log('[EmotionRecognition] Parsed values - totalVle:', totalVle, 'videosOpened:', videosOpened, 'quizzesOpened:', quizzesOpened);
+  }
+
   const normalizedEmotionData = emotionData || {};
   const dominantEmotion = normalizedEmotionData.dominantEmotion
     || normalizedEmotionData.dominant_emotion

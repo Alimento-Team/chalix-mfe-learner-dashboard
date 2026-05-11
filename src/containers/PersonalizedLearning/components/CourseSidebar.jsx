@@ -186,7 +186,7 @@ const CourseSidebar = ({ data }) => {
             {currentCourses.length > 0 ? (
               <div className="course-progress-list">
                 {currentCourses.map((course, index) => (
-                  <div key={course.course_id || index} className="course-progress-item p-3 border-bottom">
+                  <div key={course.course_id || index} className="course-progress-item p-4 border-bottom">
                     {/* Course Logo/Image */}
                     <div className="d-flex align-items-start mb-3">
                       <div 
@@ -208,12 +208,9 @@ const CourseSidebar = ({ data }) => {
                         <i className="fas fa-book" />
                       </div>
                       <div className="flex-grow-1">
-                        <h6 className="mb-1 fw-semibold" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
+                        <h6 className="mb-2 fw-semibold" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
                           {course.course_name}
                         </h6>
-                        <Badge bg="primary" className="mb-2" style={{ fontSize: '0.75rem' }}>
-                          Khóa học An toàn
-                        </Badge>
                       </div>
                     </div>
                     

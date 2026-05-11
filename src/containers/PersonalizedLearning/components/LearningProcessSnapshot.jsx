@@ -18,7 +18,14 @@ import './LearningProcessSnapshot.scss';
  */
 const LearningProcessSnapshot = ({ courseId }) => {
   const { formatMessage } = useIntl();
-  const { snapshot, loading, error } = useStudentLearningProcess(courseId);
+  // Use two hooks: one for course-specific data, one for demographic data (user-level)
+  const { snapshot: courseSnapshot, loading: courseLoading, error: courseError } = useStudentLearningProcess(courseId);
+  const { snapshot: demographicSnapshot, loading: demographicLoading } = useStudentLearningProcess(null, true);
+  
+  // Merge both snapshots: use course-specific data for scores, fallback to demographic data for personal info
+  const snapshot = courseSnapshot || demographicSnapshot;
+  const loading = courseLoading || demographicLoading;
+  const error = courseError;
 
   const formatScoreValue = (value) => {
     if (value === null || value === undefined) {
