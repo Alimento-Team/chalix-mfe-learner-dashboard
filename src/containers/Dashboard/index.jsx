@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Nav } from '@openedx/paragon';
 
 import { reduxHooks } from 'hooks';
@@ -27,9 +27,29 @@ const TAB_FILTER_MAP = {
   'personalized': null,           // Personalized learning - no filter
 };
 
+const TAB_LABELS = {
+  'ai-suggested': 'Khoá học do AI gợi ý',
+  'internal': 'Khoá học nội bộ cơ quan',
+  'elective': 'Khoá học chung của CC, VC Bộ',
+  'required': 'Khoá học bắt buộc',
+  'teaching': 'Giảng dạy',
+};
+
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('ai-suggested');
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [tabDropdownOpen, setTabDropdownOpen] = useState(false);
+  const tabDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (tabDropdownRef.current && !tabDropdownRef.current.contains(e.target)) {
+        setTabDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   
   // Get filter type for current tab
   const filterType = TAB_FILTER_MAP[activeTab];
@@ -109,6 +129,7 @@ export const Dashboard = () => {
         {/* Course Category Tabs */}
         {!initIsPending && activeTab !== 'personalized' && (
           <div className="course-category-navigation">
+            {/* Desktop: horizontal tab bar */}
             <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab} className="course-tabs">
               <Nav.Item>
                 <Nav.Link eventKey="ai-suggested" className={activeTab === 'ai-suggested' ? 'active-tab' : ''}>
@@ -136,6 +157,38 @@ export const Dashboard = () => {
                 </Nav.Link>
               </Nav.Item>
             </Nav>
+            {/* Mobile: custom dropdown (shown via CSS at ≤768px) */}
+            <div
+              className={`course-tabs-dropdown${tabDropdownOpen ? ' is-open' : ''}`}
+              ref={tabDropdownRef}
+            >
+              <button
+                type="button"
+                className="course-tabs-dropdown__trigger"
+                onClick={() => setTabDropdownOpen(!tabDropdownOpen)}
+                aria-haspopup="listbox"
+                aria-expanded={tabDropdownOpen}
+                aria-label="Chọn danh mục khoá học"
+              >
+                <span>{TAB_LABELS[activeTab]}</span>
+                <svg className="course-tabs-dropdown__chevron" viewBox="0 0 12 8" aria-hidden="true">
+                  <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+                </svg>
+              </button>
+              <ul className="course-tabs-dropdown__menu" role="listbox">
+                {Object.entries(TAB_LABELS).map(([key, label]) => (
+                  <li key={key} role="option" aria-selected={activeTab === key}>
+                    <button
+                      type="button"
+                      className={`course-tabs-dropdown__option${activeTab === key ? ' is-active' : ''}`}
+                      onClick={() => { setActiveTab(key); setTabDropdownOpen(false); }}
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
         

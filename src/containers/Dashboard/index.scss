@@ -266,3 +266,108 @@
     }
   }
 }
+
+// ======================================================
+// RESPONSIVE: Tab bar → custom dropdown on mobile
+// Additive-only — desktop Nav tabs are unchanged.
+// ======================================================
+
+// Desktop default: hide the dropdown, show the Nav
+.course-tabs-dropdown {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  // Hide horizontal Nav tabs
+  .course-category-navigation .course-tabs {
+    display: none !important;
+  }
+
+  // Allow the dropdown menu to escape the parent container
+  .course-category-navigation {
+    overflow: visible;
+  }
+
+  // Show custom dropdown
+  .course-tabs-dropdown {
+    display: block;
+    position: relative;
+
+    &__trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 18px 20px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #3494c8;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+
+      &:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.6);
+        outline-offset: 2px;
+      }
+    }
+
+    &__chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-left: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    &.is-open &__chevron {
+      transform: rotate(180deg);
+    }
+
+    &__menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 200;
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: none;
+    }
+
+    &.is-open &__menu {
+      display: block;
+    }
+
+    &__option {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 20px;
+      font-weight: 500;
+      color: #1f2937;
+      background: transparent;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+
+      &:hover {
+        background: #f3f4f6;
+        color: #3494c8;
+      }
+
+      &.is-active {
+        color: #3494c8;
+        font-weight: 700;
+        background: rgba(52, 148, 200, 0.08);
+      }
+    }
+  }
+}
