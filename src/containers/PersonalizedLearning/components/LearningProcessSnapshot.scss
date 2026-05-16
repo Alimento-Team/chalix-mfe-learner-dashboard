@@ -227,8 +227,8 @@
     }
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* Responsive adjustments — migrated from raw max-width: 768px to Paragon token (Phase 3) */
+@media (--pgn-size-breakpoint-max-width-sm) {
     .section-title {
         font-size: 0.9rem;
     }

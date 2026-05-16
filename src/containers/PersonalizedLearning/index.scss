@@ -1378,3 +1378,44 @@
         }
     }
 }
+
+// ======================================================
+// RESPONSIVE: Mobile tab bar horizontal scroll (Phase 3 — step 12)
+// Additive-only — flex layout on desktop is unchanged.
+// ======================================================
+@media (--pgn-size-breakpoint-max-width-sm) {
+    .main-tabs-container {
+        .custom-tabs-header {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+
+            .tab-button {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+// ======================================================
+// RESPONSIVE: Sidebar hide/show toggle on mobile (Phase 3 — step 14)
+// The sidebar stacks below main content at < lg already (Col lg={4} md={12}).
+// On mobile we hide it by default; the toggle button reveals it.
+// Additive-only — lg column layout is unchanged.
+// ======================================================
+@media (--pgn-size-breakpoint-max-width-md) {
+    .course-sidebar-col {
+        display: none;
+
+        &.is-open {
+            display: block;
+        }
+    }
+
+    .course-sidebar-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+}

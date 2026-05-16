@@ -25,6 +25,7 @@ const PersonalizedLearning = ({ courseId = null }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   // Use learning hours hook
   const {
     learningHours,
@@ -151,8 +152,22 @@ const PersonalizedLearning = ({ courseId = null }) => {
             </div>
           </Col>
 
+          {/* Sidebar toggle — mobile only (Phase 3) */}
+          <Col xs={12} className="d-lg-none">
+            <button
+              type="button"
+              className="btn btn-outline-secondary course-sidebar-toggle"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-expanded={sidebarOpen}
+              aria-controls="course-sidebar-content"
+            >
+              <i className="fa fa-bar-chart mr-2" aria-hidden="true" />
+              {sidebarOpen ? formatMessage(messages.hideSidebar) : formatMessage(messages.showSidebar)}
+            </button>
+          </Col>
+
           {/* Right Sidebar - Course Lists */}
-          <Col lg={4} md={12}>
+          <Col lg={4} md={12} className={`course-sidebar-col${sidebarOpen ? ' is-open' : ''}`} id="course-sidebar-content">
             <CourseSidebar data={learningData} />
           </Col>
         </Row>

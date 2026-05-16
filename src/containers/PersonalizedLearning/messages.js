@@ -86,6 +86,16 @@ const messages = defineMessages({
     defaultMessage: 'Điểm dự đoán',
     description: 'Label shown when the displayed final score is predicted',
   },
+  showSidebar: {
+    id: 'personalized.learning.sidebar.show',
+    defaultMessage: 'Xem thống kê',
+    description: 'Button label to show the course sidebar on mobile',
+  },
+  hideSidebar: {
+    id: 'personalized.learning.sidebar.hide',
+    defaultMessage: 'Ẩn thống kê',
+    description: 'Button label to hide the course sidebar on mobile',
+  },
 });
 
 export default messages;

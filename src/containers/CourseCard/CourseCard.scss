@@ -117,3 +117,14 @@
     }
   }
 }
+
+// ======================================================
+// RESPONSIVE: Full-width card stacking on mobile (Phase 3 — step 13)
+// Additive-only — no existing JSX col props changed.
+// ======================================================
+@media (--pgn-size-breakpoint-max-width-sm) {
+  .course-card {
+    max-width: 100%;
+    width: 100%;
+  }
+}
