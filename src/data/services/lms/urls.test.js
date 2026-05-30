@@ -13,6 +13,12 @@ describe('urls', () => {
         `${getConfig().LMS_BASE_URL}${url}`,
       );
     });
+    it('normalizes a relative url that is missing a leading slash', () => {
+      const url = 'media/course/image.jpg';
+      expect(urls.baseAppUrl(url)).toEqual(
+        `${getConfig().LMS_BASE_URL}/${url}`,
+      );
+    });
     it('return null if url is null', () => {
       expect(urls.baseAppUrl(null)).toEqual(null);
     });

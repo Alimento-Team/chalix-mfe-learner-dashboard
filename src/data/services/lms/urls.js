@@ -15,8 +15,23 @@ const courseUnenroll = () => `${getBaseUrl()}/change_enrollment`;
 const updateEmailSettings = () => `${getApiUrl()}/change_email_settings`;
 const entitlementEnrollment = (uuid) => `${getApiUrl()}/entitlements/v1/entitlements/${uuid}/enrollments`;
 
-// if url is null or absolute, return it as is
-export const updateUrl = (base, url) => ((url == null || url.startsWith('http://') || url.startsWith('https://')) ? url : `${base}${url}`);
+// If url is null or already absolute, return it as is. For relative URLs,
+// normalize a missing leading slash before joining to the LMS base URL.
+export const updateUrl = (base, url) => {
+  if (
+    url == null
+    || url.startsWith('http://')
+    || url.startsWith('https://')
+    || url.startsWith('//')
+    || url.startsWith('data:')
+    || url.startsWith('blob:')
+  ) {
+    return url;
+  }
+
+  const normalizedUrl = url.startsWith('/') ? url : `/${url}`;
+  return `${base}${normalizedUrl}`;
+};
 
 export const baseAppUrl = (url) => updateUrl(getBaseUrl(), url);
 export const learningMfeUrl = (url) => updateUrl(getConfig().LEARNING_BASE_URL, url);
