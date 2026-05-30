@@ -9,6 +9,7 @@ import {
   Spinner,
 } from '@openedx/paragon';
 import { useStudentLearningProcess } from '../../../data/hooks/useStudentLearningProcess';
+import { useAccountProfile } from '../../../data/hooks/useAccountProfile';
 import messages from '../messages';
 import './LearningProcessSnapshot.scss';
 
@@ -21,11 +22,41 @@ const LearningProcessSnapshot = ({ courseId }) => {
   // Use two hooks: one for course-specific data, one for demographic data (user-level)
   const { snapshot: courseSnapshot, loading: courseLoading, error: courseError } = useStudentLearningProcess(courseId);
   const { snapshot: demographicSnapshot, loading: demographicLoading } = useStudentLearningProcess(null, true);
+  const { profile: accountProfile, loading: profileLoading } = useAccountProfile();
   
   // Merge both snapshots: use course-specific data for scores, fallback to demographic data for personal info
   const snapshot = courseSnapshot || demographicSnapshot;
-  const loading = courseLoading || demographicLoading;
+  const loading = courseLoading || demographicLoading || profileLoading;
   const error = courseError;
+
+  const normalized = (value) => {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value).trim();
+    if (!text || text.toLowerCase() === 'unknown') {
+      return null;
+    }
+    return text;
+  };
+
+  const firstNonEmpty = (...values) => {
+    for (const value of values) {
+      const normalizedValue = normalized(value);
+      if (normalizedValue) {
+        return normalizedValue;
+      }
+    }
+    return null;
+  };
+
+  const personalInfo = {
+    position: firstNonEmpty(accountProfile?.level_of_education, snapshot?.position_text),
+    gender: firstNonEmpty(accountProfile?.gender, snapshot?.gender_text),
+    location: firstNonEmpty(accountProfile?.mailing_address, accountProfile?.state, accountProfile?.country, snapshot?.location_text),
+    jobTitle: firstNonEmpty(accountProfile?.job_title, snapshot?.job_title_text),
+    experience: firstNonEmpty(snapshot?.experience_text),
+  };
 
   const formatScoreValue = (value) => {
     if (value === null || value === undefined) {
@@ -158,43 +189,43 @@ const LearningProcessSnapshot = ({ courseId }) => {
                 Thông tin cá nhân
               </h6>
               <div className="info-list">
-                {snapshot.position_text && (
+                {personalInfo.position && (
                   <div className="info-item">
                     <span className="info-label">Vị trí:</span>
                     <Badge variant={getCategoricalBadgeVariant('position')}>
-                      {snapshot.position_text}
+                      {personalInfo.position}
                     </Badge>
                   </div>
                 )}
-                {snapshot.gender_text && (
+                {personalInfo.gender && (
                   <div className="info-item">
                     <span className="info-label">Giới tính:</span>
                     <Badge variant={getCategoricalBadgeVariant('gender')}>
-                      {snapshot.gender_text}
+                      {personalInfo.gender}
                     </Badge>
                   </div>
                 )}
-                {snapshot.location_text && (
+                {personalInfo.location && (
                   <div className="info-item">
                     <span className="info-label">Địa điểm:</span>
                     <Badge variant={getCategoricalBadgeVariant('location')}>
-                      {snapshot.location_text}
+                      {personalInfo.location}
                     </Badge>
                   </div>
                 )}
-                {snapshot.job_title_text && (
+                {personalInfo.jobTitle && (
                   <div className="info-item">
                     <span className="info-label">Chức danh:</span>
                     <Badge variant={getCategoricalBadgeVariant('job_title')}>
-                      {snapshot.job_title_text}
+                      {personalInfo.jobTitle}
                     </Badge>
                   </div>
                 )}
-                {snapshot.experience_text && (
+                {personalInfo.experience && (
                   <div className="info-item">
                     <span className="info-label">Kinh nghiệm:</span>
                     <Badge variant={getCategoricalBadgeVariant('experience')}>
-                      {snapshot.experience_text}
+                      {personalInfo.experience}
                     </Badge>
                   </div>
                 )}

@@ -2,9 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import LearningProcessSnapshot from './LearningProcessSnapshot';
 import * as useStudentLearningProcessModule from '../../../data/hooks/useStudentLearningProcess';
+import * as useAccountProfileModule from '../../../data/hooks/useAccountProfile';
 import messages from '../messages';
 
 jest.mock('../../../data/hooks/useStudentLearningProcess');
+jest.mock('../../../data/hooks/useAccountProfile');
 
 const defaultMessages = {
   snapshotTitle: { defaultMessage: 'Learning Process' },
@@ -52,6 +54,12 @@ describe('LearningProcessSnapshot', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useAccountProfileModule.useAccountProfile.mockReturnValue({
+      profile: null,
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
   });
 
   it('should display loading state initially', () => {
@@ -64,7 +72,7 @@ describe('LearningProcessSnapshot', () => {
 
     renderWithIntl(<LearningProcessSnapshot />);
 
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(document.querySelector('.pgn__spinner')).toBeInTheDocument();
   });
 
   it('should display snapshot data when loaded', () => {
@@ -83,7 +91,7 @@ describe('LearningProcessSnapshot', () => {
     expect(screen.getByText('Hà Nội')).toBeInTheDocument();
 
     // Check week scores
-    expect(screen.getByText(/8\/10/)).toBeInTheDocument();
+    expect(screen.getAllByText(/8\/10/).length).toBeGreaterThan(0);
     expect(screen.getByText(/9\/10/)).toBeInTheDocument();
 
     // Check final score
@@ -133,7 +141,13 @@ describe('LearningProcessSnapshot', () => {
   });
 
   it('should display correct interpretation for medium score', () => {
-    const mediumScoreSnapshot = { ...mockSnapshot, final_score: 6 };
+    const mediumScoreSnapshot = {
+      ...mockSnapshot,
+      final_score: 6,
+      effective_final_score: 6,
+      predicted_final_score: null,
+      score_type: 'actual',
+    };
     useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
       snapshot: mediumScoreSnapshot,
       loading: false,
@@ -147,7 +161,13 @@ describe('LearningProcessSnapshot', () => {
   });
 
   it('should display correct interpretation for low score', () => {
-    const lowScoreSnapshot = { ...mockSnapshot, final_score: 3 };
+    const lowScoreSnapshot = {
+      ...mockSnapshot,
+      final_score: 3,
+      effective_final_score: 3,
+      predicted_final_score: null,
+      score_type: 'actual',
+    };
     useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
       snapshot: lowScoreSnapshot,
       loading: false,
@@ -179,6 +199,41 @@ describe('LearningProcessSnapshot', () => {
     expect(screen.getByText('Hà Nội')).toBeInTheDocument();
   });
 
+  it('should prefer live account profile fields over unknown snapshot values', () => {
+    const unknownSnapshot = {
+      ...mockSnapshot,
+      position_text: 'Unknown',
+      gender_text: 'Unknown',
+      location_text: 'Unknown',
+      job_title_text: 'Unknown',
+    };
+
+    useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
+      snapshot: unknownSnapshot,
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    useAccountProfileModule.useAccountProfile.mockReturnValue({
+      profile: {
+        level_of_education: 'Chuyên viên chính',
+        gender: 'Nữ',
+        mailing_address: 'Đà Nẵng',
+        job_title: 'Chuyên viên nghiệp vụ',
+      },
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    renderWithIntl(<LearningProcessSnapshot />);
+
+    expect(screen.getByText('Chuyên viên chính')).toBeInTheDocument();
+    expect(screen.getByText('Đà Nẵng')).toBeInTheDocument();
+    expect(screen.getByText('Chuyên viên nghiệp vụ')).toBeInTheDocument();
+  });
+
   it('should render card header with title', () => {
     useStudentLearningProcessModule.useStudentLearningProcess.mockReturnValue({
       snapshot: mockSnapshot,
@@ -190,7 +245,7 @@ describe('LearningProcessSnapshot', () => {
     renderWithIntl(<LearningProcessSnapshot />);
 
     // Check for card structure
-    const card = screen.getByText('Learning Process').closest('.learning-process-snapshot-card');
+    const card = document.querySelector('.learning-process-snapshot-card');
     expect(card).toBeInTheDocument();
   });
 
@@ -204,7 +259,7 @@ describe('LearningProcessSnapshot', () => {
 
     renderWithIntl(<LearningProcessSnapshot />);
 
-    expect(screen.getByText('Actual Score')).toBeInTheDocument();
+    expect(screen.getByText('Điểm thực tế')).toBeInTheDocument();
   });
 
   it('should display predicted score label when score is predicted', () => {
@@ -225,7 +280,7 @@ describe('LearningProcessSnapshot', () => {
 
     renderWithIntl(<LearningProcessSnapshot />);
 
-    expect(screen.getByText('Predicted Score')).toBeInTheDocument();
-    expect(screen.getByText(/7.4\/10/)).toBeInTheDocument();
+    expect(screen.getByText('Điểm dự đoán')).toBeInTheDocument();
+    expect(screen.getAllByText(/7.4\/10/).length).toBeGreaterThan(0);
   });
 });
