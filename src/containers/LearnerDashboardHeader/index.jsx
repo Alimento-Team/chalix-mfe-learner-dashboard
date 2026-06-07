@@ -40,8 +40,11 @@ export const LearnerDashboardHeader = () => {
         window.location.href = window.location.origin + window.location.pathname;
         break;
       case 'learning':
-        // Học tập - go to LMS home
-        window.location.href = config.LMS_BASE_URL;
+        // Học tập - learner dashboard with learning survey tab
+        {
+          const basePath = window.location.pathname.replace(/\/$/, '');
+          window.location.href = `${window.location.origin}${basePath}/?tab=learning-survey`;
+        }
         break;
       case 'personalize': {
         // Cá nhân hóa - learner dashboard with personalized tab

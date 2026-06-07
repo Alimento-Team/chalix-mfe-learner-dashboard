@@ -25,6 +25,7 @@ const TAB_FILTER_MAP = {
   'elective': 'all_visible',      // Khoá học chung - frontend filters for elective courses
   'required': 'all_visible',      // Khóa học bắt buộc - frontend filters for mandatory courses
   'teaching': 'all_visible',      // Giảng dạy - frontend filters for teaching courses
+  'learning-survey': null,        // Học tập - nội dung khảo sát học tập
   'survey': null,                 // Khảo sát nhu cầu - no filter
   'personalized': null,           // Personalized learning - no filter
 };
@@ -35,7 +36,6 @@ const TAB_LABELS = {
   'elective': 'Khoá học chung của CC, VC Bộ',
   'required': 'Khoá học bắt buộc',
   'teaching': 'Giảng dạy',
-  'survey': 'Khảo sát nhu cầu',
 };
 
 export const Dashboard = () => {
@@ -102,6 +102,20 @@ export const Dashboard = () => {
       case 'personalized':
         console.log('[Dashboard] Rendering PersonalizedLearning component');
         return <PersonalizedLearning courseId={selectedCourseId} />;
+      case 'learning-survey':
+        console.log('[Dashboard] Rendering Learning Survey mode');
+        return (
+          <div className="dashboard-learning-survey">
+            <Nav variant="tabs" activeKey="survey" className="course-tabs">
+              <Nav.Item>
+                <Nav.Link eventKey="survey" className="active-tab">
+                  Khảo sát học tập
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+            <SurveyPanel />
+          </div>
+        );
       case 'survey':
         console.log('[Dashboard] Rendering SurveyPanel');
         return <SurveyPanel />;
@@ -133,7 +147,7 @@ export const Dashboard = () => {
         )}
         
         {/* Course Category Tabs */}
-        {!initIsPending && activeTab !== 'personalized' && (
+        {!initIsPending && activeTab !== 'personalized' && activeTab !== 'learning-survey' && (
           <div className="course-category-navigation">
             {/* Desktop: horizontal tab bar */}
             <Nav variant="tabs" activeKey={activeTab} onSelect={setActiveTab} className="course-tabs">
@@ -160,11 +174,6 @@ export const Dashboard = () => {
               <Nav.Item>
                 <Nav.Link eventKey="teaching" className={activeTab === 'teaching' ? 'active-tab' : ''}>
                   Giảng dạy
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="survey" className={activeTab === 'survey' ? 'active-tab' : ''}>
-                  Khảo sát nhu cầu
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -204,7 +213,7 @@ export const Dashboard = () => {
         )}
         
         {/* Learning Hours Progress - Moved inside dashboard-body */}
-        {!initIsPending && activeTab !== 'personalized' && learningHours && !hoursLoading && (
+        {!initIsPending && activeTab !== 'personalized' && activeTab !== 'learning-survey' && learningHours && !hoursLoading && (
           <div className="in-body-progress-container">
             <div className="progress-content">
               <div className="progress-stats">

@@ -42,9 +42,13 @@ const ChalixHeader = () => {
           {/* Main Navigation */}
           <Navbar.Collapse id="chalix-navbar-nav">
             <Nav className="mx-auto chalix-main-nav">
-              <Nav.Link href="/dashboard" className="chalix-nav-link">
+              <Nav.Link href="/learner-dashboard" className="chalix-nav-link">
                 Trang chủ
               </Nav.Link>
+              <Nav.Dropdown title="Học tập" id="learning-nav-dropdown" className="chalix-nav-link">
+                <Dropdown.Item href="/learner-dashboard">Bảng điều khiển</Dropdown.Item>
+                <Dropdown.Item href="/learner-dashboard?tab=survey">Khảo sát nhu cầu</Dropdown.Item>
+              </Nav.Dropdown>
               <Nav.Link href="/courses" className="chalix-nav-link">
                 Khóa học
               </Nav.Link>
