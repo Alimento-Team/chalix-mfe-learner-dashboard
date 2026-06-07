@@ -6,6 +6,7 @@ import { RequestKeys } from 'data/constants/requests';
 import SelectSessionModal from 'containers/SelectSessionModal';
 import CoursesPanel from 'containers/CoursesPanel';
 import PersonalizedLearning from 'containers/PersonalizedLearning';
+import SurveyPanel from 'containers/SurveyPanel';
 import LearningHoursProgressBar from 'components/LearningHoursProgressBar';
 import { useLearningHours } from 'data/hooks/useLearningHours';
 import DashboardModalSlot from 'plugin-slots/DashboardModalSlot';
@@ -24,6 +25,7 @@ const TAB_FILTER_MAP = {
   'elective': 'all_visible',      // Khoá học chung - frontend filters for elective courses
   'required': 'all_visible',      // Khóa học bắt buộc - frontend filters for mandatory courses
   'teaching': 'all_visible',      // Giảng dạy - frontend filters for teaching courses
+  'survey': null,                 // Khảo sát nhu cầu - no filter
   'personalized': null,           // Personalized learning - no filter
 };
 
@@ -33,6 +35,7 @@ const TAB_LABELS = {
   'elective': 'Khoá học chung của CC, VC Bộ',
   'required': 'Khoá học bắt buộc',
   'teaching': 'Giảng dạy',
+  'survey': 'Khảo sát nhu cầu',
 };
 
 export const Dashboard = () => {
@@ -99,6 +102,9 @@ export const Dashboard = () => {
       case 'personalized':
         console.log('[Dashboard] Rendering PersonalizedLearning component');
         return <PersonalizedLearning courseId={selectedCourseId} />;
+      case 'survey':
+        console.log('[Dashboard] Rendering SurveyPanel');
+        return <SurveyPanel />;
       case 'ai-suggested':
       case 'internal':
       case 'elective':
@@ -154,6 +160,11 @@ export const Dashboard = () => {
               <Nav.Item>
                 <Nav.Link eventKey="teaching" className={activeTab === 'teaching' ? 'active-tab' : ''}>
                   Giảng dạy
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="survey" className={activeTab === 'survey' ? 'active-tab' : ''}>
+                  Khảo sát nhu cầu
                 </Nav.Link>
               </Nav.Item>
             </Nav>

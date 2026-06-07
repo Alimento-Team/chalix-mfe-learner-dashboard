@@ -1,0 +1,476 @@
+// SurveyPanel container
+.survey-panel {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+
+    &__loading,
+    &__error,
+    &__empty {
+        padding: 40px 20px;
+        text-align: center;
+        font-size: 16px;
+        color: #666;
+    }
+
+    &__error {
+        color: #d32f2f;
+        background: #ffebee;
+        border-radius: 4px;
+    }
+}
+
+// SurveyForm
+.survey-form {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &--submitted {
+        border-left: 4px solid #4caf50;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    &__date-row {
+        background: #f5f5f5;
+        padding: 12px 16px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    &__date-sep {
+        margin-left: 16px;
+    }
+
+    &__contact-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+
+        span {
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+
+            &:focus {
+                outline: none;
+                border-color: #0066cc;
+                box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+            }
+        }
+    }
+
+    &__group {
+        margin-bottom: 24px;
+    }
+
+    &__group-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    &__choice-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+
+        @media (max-width: 600px) {
+            flex-wrap: wrap;
+        }
+    }
+
+    &__choice-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        span {
+            color: #333;
+        }
+
+        &:hover {
+            color: #0066cc;
+        }
+    }
+
+    &__detail-btn {
+        padding: 4px 12px;
+        background: #e3f2fd;
+        border: 1px solid #0066cc;
+        border-radius: 4px;
+        color: #0066cc;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+
+        &:hover {
+            background: #0066cc;
+            color: #fff;
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    &__other-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+
+        @media (max-width: 600px) {
+            flex-wrap: wrap;
+        }
+    }
+
+    &__other-input {
+        flex: 1;
+        min-width: 150px;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+
+        &:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+    }
+
+    &__error {
+        margin: 16px 0;
+        padding: 12px;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 4px;
+        color: #c62828;
+        font-size: 14px;
+    }
+
+    &__success-msg {
+        padding: 16px;
+        background: #e8f5e9;
+        border: 1px solid #4caf50;
+        border-radius: 4px;
+        color: #2e7d32;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    &__submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #0066cc;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background: #0052a3;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}
+
+// SurveyDetailModal
+.survey-detail-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+
+    &__backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+        gap: 12px;
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    &__close-btn {
+        padding: 4px 8px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        line-height: 1;
+
+        &:hover {
+            color: #333;
+        }
+    }
+
+    &__content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+    &__html {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+
+        p {
+            margin-bottom: 12px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        ul,
+        ol {
+            margin-left: 24px;
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #333;
+        }
+
+        em {
+            font-style: italic;
+            color: #666;
+        }
+    }
+
+    &__error {
+        color: #d32f2f;
+        font-weight: 500;
+    }
+
+    &__footer {
+        padding: 12px 20px;
+        border-top: 1px solid #e0e0e0;
+        text-align: right;
+    }
+
+    &__close-footer-btn {
+        padding: 8px 24px;
+        background: #0066cc;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #0052a3;
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+}
+
+// SurveyCardList for multi-survey selection
+.survey-card-list {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+
+    &__title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: #333;
+    }
+
+    &__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+// Individual survey card
+.survey-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #0066cc;
+    }
+
+    &__content {
+        flex: 1;
+    }
+
+    &__title {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #333;
+    }
+
+    &__date-range {
+        font-size: 13px;
+        color: #666;
+        margin: 0;
+    }
+
+    &__select-btn {
+        align-self: flex-start;
+        padding: 8px 16px;
+        background: #0066cc;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #0052a3;
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+}
+
+// Back button styles
+.survey-panel__back-btn {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #eee;
+        border-color: #0066cc;
+        color: #0066cc;
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
