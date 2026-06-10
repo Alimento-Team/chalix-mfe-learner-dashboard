@@ -9,6 +9,15 @@ const formatMonthYear = (isoString) => {
   return `${d.getMonth() + 1}/${d.getFullYear()}`;
 };
 
+const extractSubmitErrorMessage = (err) => (
+  err?.response?.data?.error
+  || err?.response?.data?.message
+  || err?.serverData?.error
+  || err?.serverData?.message
+  || err?.message
+  || 'Gửi khảo sát không thành công. Vui lòng thử lại.'
+);
+
 const SurveyForm = ({ survey, groups, userPrefill, alreadySubmitted, onSubmit }) => {
   const [fullName, setFullName] = useState(userPrefill?.full_name || '');
   const [email, setEmail] = useState(userPrefill?.email || '');
@@ -70,7 +79,7 @@ const SurveyForm = ({ survey, groups, userPrefill, alreadySubmitted, onSubmit })
         other_text: otherEnabled ? otherText.trim() : '',
       });
     } catch (err) {
-      setFormError('Gửi khảo sát không thành công. Vui lòng thử lại.');
+      setFormError(extractSubmitErrorMessage(err));
     } finally {
       setSubmitting(false);
     }

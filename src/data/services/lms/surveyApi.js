@@ -73,5 +73,12 @@ export const fetchChoiceDetail = async (publicToken, choiceId) => {
 export const submitSurveyResponse = async (publicToken, payload) => {
   const { data } = await getAuthenticatedHttpClient()
     .post(`${lmsBaseUrl()}/api/chalix/user-menu/surveys/${publicToken}/submit/`, payload);
+
+  if (data && data.success === false) {
+    const error = new Error(data.error || data.message || 'Gửi khảo sát không thành công.');
+    error.serverData = data;
+    throw error;
+  }
+
   return data;
 };
