@@ -21,9 +21,9 @@ export const ViewCourseButton = ({ cardId }) => {
   );
   return (
     <ActionButton
-      disabled={disableViewCourse}
+      disabled={disableViewCourse || !homeUrl}
       as="a"
-      href={homeUrl}
+      href={homeUrl || '#'}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}

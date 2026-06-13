@@ -50,7 +50,9 @@ export const ChalixCourseCard = ({ cardId }) => {
   const isInstructor = enrollmentData?.mode === 'instructor' || enrollmentData?.role === 'instructor';
 
   // Determine the course URL based on enrollment status
-  const courseUrl = hasStarted ? (resumeUrl + execEdTrackingParam) : (homeUrl + execEdTrackingParam);
+  // Validate that URL exists before constructing it
+  const baseUrl = hasStarted ? resumeUrl : homeUrl;
+  const courseUrl = baseUrl ? (baseUrl + execEdTrackingParam) : '';
 
   // Handle click on the entire card
   const handleCardClick = reduxHooks.useTrackCourseEvent(
@@ -62,7 +64,10 @@ export const ChalixCourseCard = ({ cardId }) => {
   const handleCardKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleCardClick(e);
+      // Only navigate if we have a valid URL
+      if (courseUrl) {
+        handleCardClick(e);
+      }
     }
   };
 
@@ -75,7 +80,10 @@ export const ChalixCourseCard = ({ cardId }) => {
         if (e.target.closest('button') || e.target.closest('a[href]')) {
           return;
         }
-        handleCardClick(e);
+        // Only navigate if we have a valid URL
+        if (courseUrl) {
+          handleCardClick(e);
+        }
       }}
       onKeyDown={handleCardKeyDown}
       tabIndex="0"
