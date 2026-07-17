@@ -7,6 +7,7 @@ import SelectSessionModal from 'containers/SelectSessionModal';
 import CoursesPanel from 'containers/CoursesPanel';
 import PersonalizedLearning from 'containers/PersonalizedLearning';
 import SurveyPanel from 'containers/SurveyPanel';
+import UserGuidesPanel from 'containers/UserGuidesPanel';
 import LearningHoursProgressBar from 'components/LearningHoursProgressBar';
 import { useLearningHours } from 'data/hooks/useLearningHours';
 import DashboardModalSlot from 'plugin-slots/DashboardModalSlot';
@@ -25,6 +26,7 @@ const TAB_FILTER_MAP = {
   'elective': 'all_visible',      // Khoá học chung - frontend filters for elective courses
   'required': 'all_visible',      // Khóa học bắt buộc - frontend filters for mandatory courses
   'teaching': 'all_visible',      // Giảng dạy - frontend filters for teaching courses
+  'user-guides': null,            // Tài liệu hướng dẫn - static links page
   'learning-survey': null,        // Học tập - nội dung khảo sát học tập
   'survey': null,                 // Khảo sát nhu cầu - no filter
   'personalized': null,           // Personalized learning - no filter
@@ -36,6 +38,7 @@ const TAB_LABELS = {
   'elective': 'Khoá học chung của CC, VC Bộ',
   'required': 'Khoá học bắt buộc',
   'teaching': 'Giảng dạy',
+  'user-guides': 'Tài liệu hướng dẫn',
 };
 
 export const Dashboard = () => {
@@ -119,6 +122,9 @@ export const Dashboard = () => {
       case 'survey':
         console.log('[Dashboard] Rendering SurveyPanel');
         return <SurveyPanel />;
+      case 'user-guides':
+        console.log('[Dashboard] Rendering UserGuidesPanel');
+        return <UserGuidesPanel />;
       case 'ai-suggested':
       case 'internal':
       case 'elective':
@@ -176,6 +182,11 @@ export const Dashboard = () => {
                   Giảng dạy
                 </Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="user-guides" className={activeTab === 'user-guides' ? 'active-tab' : ''}>
+                  Tài liệu hướng dẫn
+                </Nav.Link>
+              </Nav.Item>
             </Nav>
             {/* Mobile: custom dropdown (shown via CSS at ≤768px) */}
             <div
@@ -213,7 +224,7 @@ export const Dashboard = () => {
         )}
         
         {/* Learning Hours Progress - Moved inside dashboard-body */}
-        {!initIsPending && activeTab !== 'personalized' && activeTab !== 'learning-survey' && learningHours && !hoursLoading && (
+        {!initIsPending && activeTab !== 'personalized' && activeTab !== 'learning-survey' && activeTab !== 'user-guides' && learningHours && !hoursLoading && (
           <div className="in-body-progress-container">
             <div className="progress-content">
               <div className="progress-stats">

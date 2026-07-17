@@ -17,6 +17,8 @@ const configuration = {
   ENABLE_NOTICES: process.env.ENABLE_NOTICES || null,
   CAREER_LINK_URL: process.env.CAREER_LINK_URL || null,
   LOGO_URL: process.env.LOGO_URL,
+  GUIDE_CIVIL_SERVANTS_URL: process.env.GUIDE_CIVIL_SERVANTS_URL || '',
+  GUIDE_MINISTRY_AGENCY_URL: process.env.GUIDE_MINISTRY_AGENCY_URL || '',
   ENABLE_EDX_PERSONAL_DASHBOARD: process.env.ENABLE_EDX_PERSONAL_DASHBOARD === 'true',
   SEARCH_CATALOG_URL: process.env.SEARCH_CATALOG_URL || null,
   ENABLE_PROGRAMS: process.env.ENABLE_PROGRAMS === 'true',
