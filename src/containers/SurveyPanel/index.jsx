@@ -104,8 +104,10 @@ const SurveyPanel = () => {
         type="button"
         className="survey-panel__back-btn"
         onClick={handleBack}
+        aria-label="Quay lại"
+        title="Quay lại"
       >
-        ← Quay lại
+        ←
       </button>
       <SurveyForm
         survey={activeSurvey.survey}

@@ -84,8 +84,7 @@ const SurveyForm = ({ survey, groups, userPrefill, alreadySubmitted, onSubmit })
 
         {/* Date row */}
         <div className="survey-form__date-row">
-          <span>Từ tháng <strong>{formatMonthYear(survey.starts_at)}</strong></span>
-          <span className="survey-form__date-sep">Đến tháng <strong>{formatMonthYear(survey.ends_at)}</strong></span>
+          <span>Từ <strong>{formatMonthYear(survey.starts_at)} - {formatMonthYear(survey.ends_at)}</strong></span>
         </div>
 
         {/* Contact fields */}
