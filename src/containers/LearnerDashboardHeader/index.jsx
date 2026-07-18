@@ -36,8 +36,11 @@ export const LearnerDashboardHeader = () => {
         window.location.href = config.LMS_BASE_URL;
         break;
       case 'category':
-        // Danh mục - stay in learner dashboard (current MFE) - remove query params
-        window.location.href = window.location.origin + window.location.pathname;
+        // Danh mục - learner dashboard with user guides tab
+        {
+          const basePath = window.location.pathname.replace(/\/$/, '');
+          window.location.href = `${window.location.origin}${basePath}/?tab=user-guides`;
+        }
         break;
       case 'learning':
         // Học tập - learner dashboard with learning survey tab
