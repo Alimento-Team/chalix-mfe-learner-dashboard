@@ -50,6 +50,7 @@ const CourseCard = ({ course, type = 'current' }) => (
       {(type === 'current' || type === 'recommended') && course.progress_percentage !== undefined && (
         <div className="mb-2">
           <div className="d-flex justify-content-between align-items-center mb-1">
+                          marginRight: '12px',
             <small className="text-muted">Tiến độ</small>
             <small className="fw-medium">{Math.round(course.progress_percentage)}%</small>
           </div>
