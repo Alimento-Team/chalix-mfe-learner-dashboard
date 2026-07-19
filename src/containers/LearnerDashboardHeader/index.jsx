@@ -62,6 +62,12 @@ export const LearnerDashboardHeader = () => {
   };
 
   const handleUserMenuItemClick = (item) => {
+    // Keep popup behavior consistent with top header tabs across header package versions.
+    if (item?.id === 'personalize' || item?.id === 'personalization') {
+      handleNavigate('personalize');
+      return;
+    }
+
     if (item.href) {
       window.location.href = item.href;
     }
